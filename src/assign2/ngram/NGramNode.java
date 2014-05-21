@@ -36,7 +36,7 @@ public class NGramNode implements NGramContainer{
 		 * null , zero, negative or greater than 1.0 or the predictions.length
 		 * is different from probabilities.length
 		 */
-		if (words == null) {
+		if ((words == null)||((words!=null)&&(words.length == 0))) {
 			throw new NGramException("Not aviliable word!");
 		}
 		if (predictions == null) {
@@ -97,10 +97,11 @@ public class NGramNode implements NGramContainer{
 	 * @param probabilities
 	 * @throws NGramException
 	 */
+	//@SuppressWarnings("unused")
 	public NGramNode(String context, String[] predictions,
 			Double[] probabilities) throws NGramException {
 
-		if (context == null) {
+		if ((context == null)||(context.isEmpty() == true)) {
 			throw new NGramException("Not aviliable word!");
 		}
 		if (predictions == null) {
@@ -157,11 +158,28 @@ public class NGramNode implements NGramContainer{
 	@Override
 	public String getContext() {
 
-		/*
-		 * if (words.length >= 0){ for(String s:words){
-		 * this.context.concat(" "); this.context.concat(s); } }
-		 */
-		return this.context;
+		int index = 0;//record the index of words
+		if ((words!=null)&&(words.length > 0)) {
+			
+			//for copy the words to context
+			for (String s : words) {
+				if(index == 0){
+					//inser
+					this.context = s + " ";
+				}
+				else if((index == words.length-1)&&(index!=0)){
+					//
+					this.context += s;
+				}
+				else if((index != words.length-1)&&(index!=0)){
+					//
+					this.context += s + " ";
+				}
+				index ++;
+			}
+		}
+	
+			return this.context;
 	}
 
 	/**
@@ -205,7 +223,7 @@ public class NGramNode implements NGramContainer{
 	@Override
 	public void setContext(String[] words) throws NGramException {
 		// TODO Auto-generated method stub
-		if (words == null) {
+		if ((words == null)||((words!=null)&&(words.length == 0))) {
 			throw new NGramException("ERROR: words is null or empty!");
 		}
 		if (words.length > 0) {
@@ -257,13 +275,13 @@ public class NGramNode implements NGramContainer{
 	@Override
 	public void setPredictions(String[] predictions) throws NGramException {
 		// TODO Auto-generated method stub
-		int count = 0;// count the index of string[] predictions.
-		if (predictions == null) {
+		//int count = 0;// count the index of string[] predictions.
+		if ((predictions == null)||((predictions!=null)&&(predictions.length==0))) {
 			throw new NGramException("ERROR:");
 		}
-		if (predictions.length >= 0) {
+		if (predictions.length > 0) {
 			for (String s : predictions) {
-				if ((s == null)) {
+				if ((s == null)||(s.isEmpty())) {
 					throw new NGramException("ERROR:predictions contain"
 							+ "at least one empty or null string");
 				}
@@ -271,11 +289,12 @@ public class NGramNode implements NGramContainer{
 		}
 		// Init count to the last index value of
 		// predictions string[]
-		count = predictions.length;
-		for (String s : predictions) {
-			this.predictions[count] = s;// add the new predictions words
-			count++;
-		}
+		//count = predictions.length;
+		//for (String s : predictions) {
+		//	this.predictions[count] = s;// add the new predictions words
+		//	count++;
+		//}
+		this.predictions = predictions;
 	}
 
 	/**
@@ -318,7 +337,7 @@ public class NGramNode implements NGramContainer{
 			throw new NGramException("ERROR: probabilities null or contains!");
 		}
 		for (Double i : probabilities) {
-			if ((i > 1) || (i <= 0)) {
+			if ((i > 1) || (i <= 0)||(i==null)) {
 				throw new NGramException(
 						"ERROR: probabilities contain at least one entry "
 								+ "which is null , zero, negative or greater than 1.0");
@@ -326,12 +345,13 @@ public class NGramNode implements NGramContainer{
 		}
 		// init count to the last index value of
 		// predictions string[]
+		/*
 		count = probabilities.length;
 		for (Double d : probabilities) {
 			this.probabilities[count] = d;// add the new probabilities number.
 			count++;
-		}
-		// this.probabilities = probabilities;
+		}*/
+		this.probabilities = probabilities;
 	}
 
 	/*
