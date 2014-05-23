@@ -337,7 +337,7 @@ public class NGramNode implements NGramContainer{
 			throw new NGramException("ERROR: probabilities null or contains!");
 		}
 		for (Double i : probabilities) {
-			if ((i > 1) || (i <= 0)||(i==null)) {
+			if ((i==null)||(i > 1) || (i <= 0)) {
 				throw new NGramException(
 						"ERROR: probabilities contain at least one entry "
 								+ "which is null , zero, negative or greater than 1.0");

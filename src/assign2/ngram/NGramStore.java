@@ -11,9 +11,9 @@ import com.microsoft.research.webngram.service.NgramServiceFactory;
 import com.microsoft.research.webngram.service.GenerationService.TokenSet;
 
 /**
- * @version 1.0
+ * @version 1.2
  * @author QianFu(Cynthia)
- * @created 2014.5.15.
+ * @created 2014.5.23.
  */
 public class NGramStore implements NGramMap {
 
@@ -45,8 +45,8 @@ public class NGramStore implements NGramMap {
 	 */
 	@Override
 	public void addNGram(NGramContainer ngram) {
-		// TODO Auto-generated method stub
-		// boolean EXIST = false; // judge whether or not the context exists in
+		
+	   // judge whether or not the context exists in
 		// the Map
 		for (NGramContainer currentNgram : ngramContainersList) {
 			if (currentNgram == ngram) {
@@ -85,7 +85,7 @@ public class NGramStore implements NGramMap {
 	 */
 	@Override
 	public void removeNGram(String context) {
-		// TODO Auto-generated method stub
+		
 		for (NGramContainer currentNgram : ngramContainersList) {
 			if (currentNgram.getContext() == context) {
 				ngramContainersList.remove(currentNgram);// updated
@@ -149,6 +149,7 @@ public class NGramStore implements NGramMap {
 			throws NGramException {
 
 		try {
+			
 			NgramServiceFactory factory = NgramServiceFactory
 					.newInstance(NGramStore.Key);
 
@@ -157,10 +158,20 @@ public class NGramStore implements NGramMap {
 				throw new NGramException(
 						"ERROR: fail to connect to the service");
 			}
-
+			
+			if((context == null)||(context.isEmpty())){
+				throw new NGramException(
+						"ERROR: context is null or empty!");
+			}
 			GenerationService service = factory.newGenerationService();
 			// List<String> models = service.getModels();
-
+			if (service == null) {
+				// NGramException if the service fails to connect
+				
+				throw new NGramException(
+						"ERROR: fail to connect to the service");
+			}
+			
 			TokenSet tokenSet = service.generate(NGramStore.Key,
 					"bing-body/2013-12/5", context, maxResults, null);
 
@@ -168,11 +179,13 @@ public class NGramStore implements NGramMap {
 			 * return false and do not store the bare context if the service
 			 * returns no predictions
 			 */
-			if (tokenSet == null || tokenSet.getWords() == null
-					|| tokenSet.getWords().isEmpty()) {
+			
+			if ((tokenSet == null) || (tokenSet.getWords() == null)
+					|| (tokenSet.getWords().isEmpty())) {
 				HAVERESULT.add(false);
 				return false;
 			}
+			
 			// get the predictions
 			List<String> predictionsList = tokenSet.getWords();
 			// get the probabilities
@@ -189,10 +202,6 @@ public class NGramStore implements NGramMap {
 					.toArray(new String[0]);
 			Double[] probabilities = (Double[]) probabilitiesList
 					.toArray(new Double[0]);
-           
-			//System.out.println(predictions);
-            //System.out.println(probabilities);
-			
 			NGramNode ngramContainer = new NGramNode(context, predictions,
 					probabilities);
 			this.addNGram(ngramContainer);
@@ -213,22 +222,11 @@ public class NGramStore implements NGramMap {
 	public String toString() {
 		String str = null;
 		int LASTINDEX = 0;
-		// int indexStr = 0;// the index of str
-		//Print the newest one;
-		/*for (NGramContainer ngram : ngramContainersList) {
-			try {
-				if (this.getNGramsFromService(ngram.getContext(), MAXRESULTS) == false) {
-					str += "NGram Results for Query: " + ngram.getContext()
-							+ "\n" + "No results were retured for this phrase";
-				}
-				
-				str += ngram.toString() + "\n";
-			} catch (NGramException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}*/
-		
+		//display the last one
+		if((ngramContainersList.isEmpty())||ngramContainersList == null){
+			str = null;
+			return str;
+		}
 		LASTINDEX = ngramContainersList.size()-1;
 		str = ngramContainersList.get(LASTINDEX).toString() + "\n";
 		return str;
