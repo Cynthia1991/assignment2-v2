@@ -54,17 +54,7 @@ public class NGramStore implements NGramMap {
 			}
 		}
 		ngramContainersList.add(ngram);
-		HAVERESULT.add(true);
-/*
-		try {
-			this.getNGramsFromService(ngram.getContext(), MAXRESULTS);
-		} catch (NGramException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-*/
-		// ngramContainersList.;
-
+		//HAVERESULT.add(true);
 	}
 
 	/**
@@ -90,7 +80,6 @@ public class NGramStore implements NGramMap {
 			if (currentNgram.getContext() == context) {
 				ngramContainersList.remove(currentNgram);// updated
 			}
-			// System.out.println(tmp);
 		}
 
 	}
@@ -110,15 +99,11 @@ public class NGramStore implements NGramMap {
 	 */
 	@Override
 	public NGramContainer getNGram(String context) {
-		// TODO Auto-generated method stub
-		boolean EXIST = false; // whether or not the context exist in the map
+		
 		for (NGramContainer currentNgram : ngramContainersList) {
 			if (currentNgram.getContext() == context) {
-				// ngramContainersList.remove(currentNgram);//updated
-				EXIST = true;
 				return currentNgram;
 			}
-			// System.out.println(tmp);
 		}
 		return null;
 	}
@@ -164,7 +149,7 @@ public class NGramStore implements NGramMap {
 						"ERROR: context is null or empty!");
 			}
 			GenerationService service = factory.newGenerationService();
-			// List<String> models = service.getModels();
+			
 			if (service == null) {
 				// NGramException if the service fails to connect
 				
@@ -175,10 +160,6 @@ public class NGramStore implements NGramMap {
 			TokenSet tokenSet = service.generate(NGramStore.Key,
 					"bing-body/2013-12/5", context, maxResults, null);
 
-			/*
-			 * return false and do not store the bare context if the service
-			 * returns no predictions
-			 */
 			
 			if ((tokenSet == null) || (tokenSet.getWords() == null)
 					|| (tokenSet.getWords().isEmpty())) {
@@ -211,11 +192,6 @@ public class NGramStore implements NGramMap {
 			throw new NGramException(
 					"ERROR: the NGramContainer cannot be created");
 		}
-
-		// throws NGramException if the NGramContainer cannot be created.
-		// if(ngramContainer == )
-
-
 	}
 	
 	@Override

@@ -2,9 +2,9 @@ package assign2.ngram;
 import java.util.ArrayList;
 import java.util.List;
 /**  
- * @version 1.0  
+ * @version 1.2  
  * @author QianFu  
- * @created 2014.5.15  
+ * @created 2014.5.23  
  */  
 public class NGramNode implements NGramContainer{
 	 
