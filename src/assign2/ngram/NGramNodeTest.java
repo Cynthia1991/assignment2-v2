@@ -760,7 +760,7 @@ public class NGramNodeTest {
 			throws NGramException {
 		//String[] words = {};
 		String context = "4558 yo tou";
-		String[] wordsSet = {};
+		String[] wordsSet = null;
 		//String contextSet = "";
 		String[] predictions = { "to", "be", "or" };
 		Double[] probabilities = { 0.111, 0.222, 0.333 };
@@ -859,8 +859,8 @@ public class NGramNodeTest {
 		String[] words = { "to", "", "or" };
 		String context = "789ffhj huii";
 
-		String[] wordsSet = { "to", "", "or" };
-		String contextSet = "";
+		String[] wordsSet = { "to","", "or" };
+		//String contextSet = "";
 		String[] predictions = { "to", "be", "or" };
 		Double[] probabilities = { 0.111, 0.222, 0.333 };
 		// @SuppressWarnings("unused")
@@ -1348,7 +1348,7 @@ public class NGramNodeTest {
 	// @Test(expected = NGramException.class)
 	// public void Test_word_setPredictions_Exception_predictionIsNull() throws
 	// NGramException {
-	/*
+	
 	@Test(expected = NGramException.class)
 	public void Test_words_setProbabilities_Exception_probabilitiesEntryIsNull()
 			throws NGramException {
@@ -1362,7 +1362,7 @@ public class NGramNodeTest {
 		// ngram.setPredictions(predictionsSet);
 		ngram.setProbabilities(probabilitiesSet);
 		// assertArrayEquals(probabilitiesSet, ngram.getProbabilities());
-	}*/
+	}
 
 	/**
 	 * Test method : {@link assign2.ngram.NGramNode#void
@@ -1374,7 +1374,7 @@ public class NGramNodeTest {
 	 * 
 	 * @throws NGramException
 	 */
-	/*
+	
 	@Test(expected = NGramException.class)
 	public void Test_context_setProbabilities_Exception_probabilitiesEntryIsNull()
 			throws NGramException {
@@ -1382,13 +1382,13 @@ public class NGramNodeTest {
 		String context = "my book is";
 		String[] predictions = { "to", "be", "or" };
 		Double[] probabilities = { 0.111, 0.222, 0.333 };
-		Double[] probabilitiesSet = { 0.876,1.0, 0.76 };
+		Double[] probabilitiesSet = { 0.876,null, 0.76 };
 		NGramNode ngram = new NGramNode(context, predictions, probabilities);
 		// ngram.getProbabilities();
 		// ngram.setPredictions(predictionsSet);
 		ngram.setProbabilities(probabilitiesSet);
 		// assertArrayEquals(probabilitiesSet, ngram.getProbabilities());
-	}*/
+	}
 
 	/**
 	 * Test method : {@link assign2.ngram.NGramNode#void

@@ -246,6 +246,7 @@ Parameters:ngram - - ngram to be added*/
 	 */
 	@Test
 	public void Test_GetNGramsFromService_Normal() throws NGramException {
+		
 		String context = "to be or";
 		ngramsMap.getNGramsFromService(context, MAXRESULTS);
 		assertEquals(true, ngramsMap.getNGramsFromService(context, MAXRESULTS));
