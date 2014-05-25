@@ -73,8 +73,7 @@ public class ResultPanel extends JPanel {
 	private JFreeChart chart;
 	private CategoryDataset dataset;
 	private String chartTitle;
-	//private NGramStore ngramMap;
-	//private JScrollPane textScroll; //add 
+	
 	private JScrollPane resultScroll; //add
 	private JMenuBar resultMenuBar;
 	private static java.awt.Font Font = new Font("Serif", 0, 20);

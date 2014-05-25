@@ -37,7 +37,7 @@ import assign2.ngram.NGramMap;
  */
 /*a panel to hold the jfreechart bar chart object for display*/
 
-//@SuppressWarnings("serial")
+
 public class ChartPanel extends JPanel{
 	/**  
 	 * @fields serialVersionUID  
@@ -77,9 +77,9 @@ public class ChartPanel extends JPanel{
 		chart.setBackgroundPaint(ChartColor.PINK);
 		
 		CategoryPlot p = chart.getCategoryPlot();
-		// 设置图的背景颜色
+		
 		p.setBackgroundPaint(ChartColor.WHITE);
-		// 设置表格线颜色
+		
 		p.setRangeGridlinePaint(ChartColor.red);
 		
 	}

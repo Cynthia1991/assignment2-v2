@@ -54,7 +54,6 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 	 * @param args
 	 */
 	private static final long serialVersionUID = -9160731609575231933L;
-	// private static final long serialVersionUID = -7031008862559936404L;
 	private static final int WIDTH = 1600;
 	private static final int HEIGHT = 800;
 	private static final int TEXTPANEL_WIDTH = 1600;
