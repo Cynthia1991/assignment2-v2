@@ -2,7 +2,10 @@ package assign2.ngram;
 
 import java.awt.print.Printable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.sf.jautodoc.preferences.MainPreferencePage;
 
@@ -13,16 +16,20 @@ import com.microsoft.research.webngram.service.GenerationService.TokenSet;
 /**
  * @version 1.2
  * @author QianFu(Cynthia)
- * @created 2014.5.23.
+ * @created 2014.5.25.
  */
 public class NGramStore implements NGramMap {
 
-	private List<NGramContainer> ngramContainersList = new ArrayList<NGramContainer>();
+	//private List<NGramContainer> ngramContainersList = new ArrayList<NGramContainer>();
+	private Map<String, NGramContainer> ngramContainerList;
 	private static final String Key = "068cc746-31ff-4e41-ae83-a2d3712d3e68";
     private int MAXRESULTS = 5;
 	// private LinkedList<String[]> ngramList = new LinkedList<String[]>();
     private List<Boolean> HAVERESULT = new ArrayList<Boolean>();
    
+	public NGramStore() {
+		ngramContainerList = new LinkedHashMap<String, NGramContainer>();
+	}
 	/**
 	 * 
 	 * (Silently) Add an ngram to the Map. If the <code>context</code> does not
@@ -43,12 +50,14 @@ public class NGramStore implements NGramMap {
 		
 	   // judge whether or not the context exists in
 		// the Map
+		ngramContainerList.put(ngram.getContext(), ngram);
+		/*
 		for (NGramContainer currentNgram : ngramContainersList) {
 			if (currentNgram == ngram) {
 				ngramContainersList.remove(currentNgram);// updated
 			}
 		}
-		ngramContainersList.add(ngram);
+		ngramContainersList.add(ngram);*/
 		//HAVERESULT.add(true);
 	}
 
@@ -71,11 +80,13 @@ public class NGramStore implements NGramMap {
 	@Override
 	public void removeNGram(String context) {
 		
+		ngramContainerList.remove(context);
+		/*
 		for (NGramContainer currentNgram : ngramContainersList) {
 			if (currentNgram.getContext() == context) {
 				ngramContainersList.remove(currentNgram);// updated
 			}
-		}
+		}*/
 
 	}
 
@@ -95,12 +106,14 @@ public class NGramStore implements NGramMap {
 	@Override
 	public NGramContainer getNGram(String context) {
 		
-		for (NGramContainer currentNgram : ngramContainersList) {
+		NGramContainer nc = ngramContainerList.get(context);
+		
+		/*for (NGramContainer currentNgram : ngramContainersList) {
 			if (currentNgram.getContext() == context) {
 				return currentNgram;
 			}
-		}
-		return null;
+		}*/
+		return nc;
 	}
 
 	/**
@@ -191,7 +204,7 @@ public class NGramStore implements NGramMap {
 	
 	@Override
 	public String toString() {
-		String str = null;
+		/*String str = null;
 		int LASTINDEX = 0;
 		//display the last one
 		if((ngramContainersList.isEmpty())||ngramContainersList == null){
@@ -200,6 +213,23 @@ public class NGramStore implements NGramMap {
 		}
 		LASTINDEX = ngramContainersList.size()-1;
 		str = ngramContainersList.get(LASTINDEX).toString() + "\n";
-		return str;
+		return str;*/
+		
+		StringBuffer ngramBuffer = new StringBuffer();
+		Set<String> keySet = ngramContainerList.keySet();
+		for(String s : keySet){
+		NGramNode node = (NGramNode) ngramContainerList.get(s);
+		// if(node == null) {
+		// sb.append("No ngram predictions were returned.").append("\n");
+		// sb.append("Please try another query.").append("\n\n");
+		// } else {
+		// sb.append(node.toString());
+		// sb.append("\n");
+		// }
+
+		ngramBuffer.append(node.toString());
+		ngramBuffer.append("\n");
+		}
+		return ngramBuffer.toString();
 	}
 }

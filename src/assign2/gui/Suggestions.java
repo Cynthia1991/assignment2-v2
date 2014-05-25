@@ -31,7 +31,7 @@ public class Suggestions {
 		bar.pack();
 		bar.setVisible(true);*/
 		//SwingUtilities.invokeLater(new ResultPanel("Welcome to Cynthia's Search suggestion:)"));
-	    SwingUtilities.invokeLater(new NGramGUI("Welcome to Cynthia's Search suggestion:)"));
+	    SwingUtilities.invokeLater(new NGramGUI("Welcome to Cynthia&Lambert's Search suggestion:)"));
 	    
 	}
 }

@@ -1,23 +1,26 @@
 package assign2.ngram;
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-/**  
- * @version 1.2  
- * @author QianFu  
- * @created 2014.5.23  
- */  
-public class NGramNode implements NGramContainer{
-	 
+
+/**
+ * @version 1.2
+ * @author QianFu
+ * @created 2014.5.23
+ */
+public class NGramNode implements NGramContainer {
+
 	private String[] words;
-	private String[] predictions;
-	private Double[] probabilities;
-	
-	//private Boolean[] HAVERESULT;
-	
+	ArrayList<String> predictionsList;
+	ArrayList<Double> probabilitiesList;
+
+	// private Boolean[] HAVERESULT;
+
 	private String context;
 	public static final String DecFormat = "#.######";// Format for output of
 														// probabilities
-	
+
 	/**
 	 * Constructor Method
 	 * 
@@ -26,9 +29,38 @@ public class NGramNode implements NGramContainer{
 	 * @param probabilities
 	 * @throws NGramException
 	 */
+	private boolean checkArray(String[] stringArray) {
+		boolean isValid = true;
+		if ((stringArray != null)&&(stringArray.length > 0)) {
+			for(String s: stringArray){
+				if((s == null)||s.isEmpty()){
+					isValid = false;
+					break;
+				}
+			}
+		} else {
+			isValid = false;
+		}
+		return isValid;
+	}
+
+	private boolean checkArray(Double[] doubleArray) {
+		boolean isValid = true;
+		if (doubleArray != null) {
+			for (Double d : doubleArray) {
+				if ((d == null) || (d <= 0) || (d > 1)) {
+					isValid = false;
+					break;
+				}
+			}
+		} else {
+			isValid = false;
+		}
+		return isValid;
+	}
 	public NGramNode(String[] words, String[] predictions,
 			Double[] probabilities) throws NGramException {
-		// TODO Auto-generated constructor stub
+		
 		/*
 		 * words is null or empty or contains at least one empty or null string
 		 * predictions is null or empty or contains at least one empty or null
@@ -36,56 +68,29 @@ public class NGramNode implements NGramContainer{
 		 * null , zero, negative or greater than 1.0 or the predictions.length
 		 * is different from probabilities.length
 		 */
-		if ((words == null)||((words!=null)&&(words.length == 0))) {
+		if(checkArray(words) == false){
 			throw new NGramException("Not aviliable word!");
 		}
-		if (predictions == null) {
-			throw new NGramException("");
+		if(checkArray(predictions) == false){
+			throw new NGramException("Not aviliable word!");
 		}
-		if ((probabilities == null)) {
-			throw new NGramException("");
+		if(checkArray(probabilities) == false){
+			throw new NGramException("Not aviliable word!");
 		}
+		
 		if (predictions.length != probabilities.length) {
 			// predictions.length is different from
 			// probabilities.length
-			throw new NGramException("");
+			throw new NGramException("the predictions.length is different from probabilities.length");
 		}
-		if (words.length >= 0) {
-			for (String s : words) {
-				if ((s == null) || (s.isEmpty())) {
-					// contains at least one entry
-					// which is null , zero,
-					// negative or greater than 1.0
-					throw new NGramException("");
-				}
+		
+		context = "";
+		predictionsList = new ArrayList<String>();
+		probabilitiesList = new ArrayList<Double>();
 
-			}
-		}
-		if (predictions.length >= 0) {
-			for (String s : predictions) {
-				if ((s == null) || (s == "")) {
-					// contains at least one entry
-					// which is null , zero,
-					// negative or greater than 1.0
-					throw new NGramException("");
-				}
-
-			}
-		}
-		if (probabilities.length >= 0) {
-			for (Double i : probabilities) {
-				if ((i == null) || (i > 1) || (i <= 0)) {
-					// contains at least one entry
-					// which is null , zero, negative 
-					// or greater than 1.0
-					throw new NGramException("");
-				}
-
-			}
-		}
-		this.words = words;
-		this.predictions = predictions;
-		this.probabilities = probabilities;
+		setContext(words);
+		setPredictions(predictions);
+		setProbabilities(probabilities);
 
 	}
 
@@ -97,17 +102,18 @@ public class NGramNode implements NGramContainer{
 	 * @param probabilities
 	 * @throws NGramException
 	 */
-	//@SuppressWarnings("unused")
+	// @SuppressWarnings("unused")
 	public NGramNode(String context, String[] predictions,
 			Double[] probabilities) throws NGramException {
 
-		if ((context == null)||(context.isEmpty() == true)) {
+		
+		if ((context == null) || (context.isEmpty() == true)) {
 			throw new NGramException("Not aviliable word!");
 		}
-		if (predictions == null) {
+		if (checkArray(predictions)==false) {
 			throw new NGramException("");//
 		}
-		if ((probabilities == null)) {
+		if (checkArray(probabilities)==false) {
 			throw new NGramException("");//
 		}
 		if (predictions.length != probabilities.length) {
@@ -115,33 +121,14 @@ public class NGramNode implements NGramContainer{
 			// probabilities.length
 			throw new NGramException("");
 		}
-		if (predictions.length >= 0) {
-			for (String s : predictions) {
-				if ((s == null) || (s == "")) {
-					// contains at least one entry
-					// which is null , zero,
-					// negative or greater than 1.0
-					throw new NGramException("");
-				}
+		
+		this.context = context;
+		predictionsList = new ArrayList<String>();
+		probabilitiesList = new ArrayList<Double>();
 
-			}
-		}
-		if (probabilities.length >= 0) {
-			for (Double i : probabilities) {
-				if ((i == null) || (i > 1) || (i <= 0)) {
-					// contains at least one entry
-					// which is null , zero,
-					// negative or greater than 1.0
-					throw new NGramException("");
-				}
-
-			}
-		}
-		this.context = context;// string containing the context phrase
-		this.predictions = predictions;// array of next words in the phrase as
-										// predicted by the model
-		this.probabilities = probabilities;// corresponding probabilities of
-											// context>prediction w.r.t. model
+		setContext(context);
+		setPredictions(predictions);
+		setProbabilities(probabilities);
 	}
 
 	/**
@@ -158,28 +145,26 @@ public class NGramNode implements NGramContainer{
 	@Override
 	public String getContext() {
 
-		int index = 0;//record the index of words
-		if ((words!=null)&&(words.length > 0)) {
-			
-			//for copy the words to context
+		int index = 0;// record the index of words
+		if ((words != null) && (words.length > 0)) {
+
+			// for copy the words to context
 			for (String s : words) {
-				if(index == 0){
-					//inser
+				if (index == 0) {
+					// inser
 					this.context = s + " ";
-				}
-				else if((index == words.length-1)&&(index!=0)){
+				} else if ((index == words.length - 1) && (index != 0)) {
 					//
 					this.context += s;
-				}
-				else if((index != words.length-1)&&(index!=0)){
+				} else if ((index != words.length - 1) && (index != 0)) {
 					//
 					this.context += s + " ";
 				}
-				index ++;
+				index++;
 			}
 		}
-	
-			return this.context;
+
+		return this.context;
 	}
 
 	/**
@@ -223,18 +208,26 @@ public class NGramNode implements NGramContainer{
 	@Override
 	public void setContext(String[] words) throws NGramException {
 		// TODO Auto-generated method stub
-		if ((words == null)||((words!=null)&&(words.length == 0))) {
+		if(checkArray(words)==false){
 			throw new NGramException("ERROR: words is null or empty!");
 		}
-		if (words.length > 0) {
-			for (String s : words) {
-				if ((s == null) || (s.isEmpty())) {
-					throw new NGramException(
-							"ERROR: words contain at least one empty or null string");
-				}
-				this.context = this.context + " " + s;
+		
+		
+		/*
+		 * if (words.length > 0) { for (String s : words) { if ((s == null) ||
+		 * (s.isEmpty())) { throw new NGramException(
+		 * "ERROR: words contain at least one empty or null string"); }
+		 * this.context = this.context + " " + s; } }
+		 */
+
+		StringBuffer contextBuffer = new StringBuffer();
+		for (int i = 0; i < words.length; i++) {
+			contextBuffer.append(words[i]);
+			if (i < words.length - 1) {
+				contextBuffer.append(" ");
 			}
 		}
+		this.context = contextBuffer.toString();
 	}
 
 	/**
@@ -252,9 +245,9 @@ public class NGramNode implements NGramContainer{
 	 */
 	@Override
 	public String[] getPredictions() {
-		// TODO Auto-generated method stub
 
-		return predictions;
+		// return predictions;
+		return predictionsList.toArray(new String[predictionsList.size()]);
 	}// end getPredictions
 
 	/**
@@ -275,13 +268,14 @@ public class NGramNode implements NGramContainer{
 	@Override
 	public void setPredictions(String[] predictions) throws NGramException {
 		// TODO Auto-generated method stub
-		//int count = 0;// count the index of string[] predictions.
-		if ((predictions == null)||((predictions!=null)&&(predictions.length==0))) {
+		// int count = 0;// count the index of string[] predictions.
+		if ((predictions == null)
+				|| ((predictions != null) && (predictions.length == 0))) {
 			throw new NGramException("ERROR:");
 		}
 		if (predictions.length > 0) {
 			for (String s : predictions) {
-				if ((s == null)||(s.isEmpty())) {
+				if ((s == null) || (s.isEmpty())) {
 					throw new NGramException("ERROR:predictions contain"
 							+ "at least one empty or null string");
 				}
@@ -289,12 +283,16 @@ public class NGramNode implements NGramContainer{
 		}
 		// Init count to the last index value of
 		// predictions string[]
-		//count = predictions.length;
-		//for (String s : predictions) {
-		//	this.predictions[count] = s;// add the new predictions words
-		//	count++;
-		//}
-		this.predictions = predictions;
+		// count = predictions.length;
+		// for (String s : predictions) {
+		// this.predictions[count] = s;// add the new predictions words
+		// count++;
+		// }
+		// this.predictions = predictions;
+		predictionsList.clear();
+		for (int i = 0; i < predictions.length; i++) {
+			predictionsList.add(predictions[i]);
+		}
 	}
 
 	/**
@@ -311,7 +309,9 @@ public class NGramNode implements NGramContainer{
 	@Override
 	public Double[] getProbabilities() {
 		// TODO Auto-generated method stub
-		return this.probabilities;
+		return probabilitiesList.toArray(new Double[probabilitiesList.size()]);
+
+		// return this.probabilities;
 	}
 
 	/**
@@ -337,7 +337,7 @@ public class NGramNode implements NGramContainer{
 			throw new NGramException("ERROR: probabilities null or contains!");
 		}
 		for (Double i : probabilities) {
-			if ((i==null)||(i > 1) || (i <= 0)) {
+			if ((i == null) || (i > 1) || (i <= 0)) {
 				throw new NGramException(
 						"ERROR: probabilities contain at least one entry "
 								+ "which is null , zero, negative or greater than 1.0");
@@ -346,12 +346,15 @@ public class NGramNode implements NGramContainer{
 		// init count to the last index value of
 		// predictions string[]
 		/*
-		count = probabilities.length;
-		for (Double d : probabilities) {
-			this.probabilities[count] = d;// add the new probabilities number.
-			count++;
-		}*/
-		this.probabilities = probabilities;
+		 * count = probabilities.length; for (Double d : probabilities) {
+		 * this.probabilities[count] = d;// add the new probabilities number.
+		 * count++; }
+		 */
+		probabilitiesList.clear();
+		for (int i = 0; i < probabilities.length; i++) {
+			probabilitiesList.add(probabilities[i]);
+		}
+		// this.probabilities = probabilities;
 	}
 
 	/*
@@ -361,17 +364,18 @@ public class NGramNode implements NGramContainer{
 	 */
 	@Override
 	public String toString() {
-		String str = "NGram Results for Query: ";
-		int count = 0;// This is for count the index of probability
-		str += this.getContext();
-		str += "\n";
-
-		for (String p : this.predictions) {
-
-			str += this.getContext() + " | " + p + " : "
-					+ this.probabilities[count] + "\n";
-			count++;
+		StringBuffer ngramBuffer = new StringBuffer();
+		DecimalFormat df = new DecimalFormat(DecFormat);
+		for (int i = 0; i < predictionsList.size(); i++) {
+			 ngramBuffer.append(context);
+			 ngramBuffer.append(" | ");
+			 ngramBuffer.append(predictionsList.get(i));
+			 ngramBuffer.append(" : ");
+			 ngramBuffer.append(df.format(probabilitiesList.get(i)));
+			 ngramBuffer.append("\n");
 		}
-		return str;
+
+		return  ngramBuffer.toString();
+
 	}
 }

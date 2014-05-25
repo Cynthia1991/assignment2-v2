@@ -9,45 +9,35 @@ package assign2.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
 
-import assign2.examples.swing.SimpleFrame;
-import assign2.ngram.NGramContainer;
 import assign2.ngram.NGramException;
 import assign2.ngram.NGramNode;
 import assign2.ngram.NGramStore;
-
-import java.awt.peer.SystemTrayPeer;
-import java.util.ArrayList;
-import java.util.List;
-
-import assign2.ngram.*;
-
-import java.util.regex.*;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * @version 1.0
@@ -67,285 +57,179 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 	// private static final long serialVersionUID = -7031008862559936404L;
 	private static final int WIDTH = 1600;
 	private static final int HEIGHT = 800;
-	private static final int TEXT_WIDTH = 600;
-	private static final int TEXT_HEIGHT = 100;
-	private static final int RESULT_WIDTH = 600;
+	private static final int TEXTPANEL_WIDTH = 1600;
+	private static final int TEXTPANEL_HEIGHT = 100;
+	private static final int TEXT_WIDTH = 800;
+	private static final int TEXT_HEIGHT = 60;
+
+	private static final int PNUM_WIDTH = 60;
+	private static final int PNUM_HEIGHT = 60;
+	private static final int RESULT_WIDTH = 500;
 	private static final int RESULT_HEIGHT = 600;
 	private static final int BAR_WIDTH = 1000;
 	private static final int BAR_HEIGHT = 800;
 	// private static final Double[] nodeProbabilities = null;
 
 	// creat GUI parts
-	private JPanel btmPanel;
-	private JPanel textPanel;
-	private JTextArea textDisplay;
-	private JPanel barPanel;
-	private JPanel resultTextPanel;
-	private ResultPanel resultBar;
-	private ResultPanel resultText;
 
-	// creat ngram parts
+	private JPanel textAreaPanel;// input text area
+	private JTextField textDisplay;// input text
+	private JTextField predictionsNum;// input the number of predictions
+
+	private JPanel resultsPanel;// results display area panel
+	private JPanel resultsBarPanel;// results bar display panel
+	private JTextField resultText;// results display text
+
+	private JPanel buttomPanel;// buttom panel
+	
 	private NGramNode ngram;
 	private NGramStore ngramsMap;
-	private int MAXRESULTS = 5;
-	// private String[] textResults = new String();//store all the results
-	private List<String> textResults = new ArrayList<String>();
-	// private List<String> inputContexts = new ArrayList<String>();
-	private int indexOfResults = 0;// the index of all the results
+	
 
-	// private String[] inputContexts;
-	private List<String> inputContexts = new ArrayList<String>();
-	private List<String> inputNoResultContexts = new ArrayList<String>();
-	private String[] nodePredictions;// node prediction
-	private Double[] nodeProbabilities;// node probabilities
+	private int predictionsNumber = 0;
 
-	// private NGramGUI barGramGUI;
-	public NGramGUI(String arg0) throws HeadlessException {
-		super(arg0);
-	}
+	private String[] inputContexts;
+	
 
-	/*
-	 * public static void main(String[] args) { SwingUtilities.invokeLater(new
-	 * SimpleFrame("Swing GUI Demo")); }
-	 */
+	private static java.awt.Font Font = new Font("Serif", 0, 20);
+	private Thread myThread;
+	private JButton predictionButton;
+
+	// helper method to construct the GUI
 
 	/**
 	 * @param arg0
 	 *            - the Frame Title
 	 */
-	/*
-	 * public SimpleFrame(String arg0) throws HeadlessException { super(arg0); }
-	 */
-
-	// helper method to construct the GUI
-	private void createGUI() {
-		setSize(WIDTH, HEIGHT);// creat window
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLayout(new BorderLayout());
-
-		// Creat text area
-		textDisplay = new JTextArea("Please input your message~");
-		textDisplay.setPreferredSize(new Dimension(TEXT_WIDTH,TEXT_HEIGHT));
-		//textDisplay.pr
-		textDisplay.setEditable(true);
-		textDisplay.setFont(new Font("Serif",0,20));
-
-		// Creat input panel
-		textPanel = new JPanel();
-		textPanel.setBackground(null);
-		textPanel.setSize(TEXT_WIDTH, TEXT_HEIGHT);
-		textPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Input"));
-		textPanel.setLayout(new BorderLayout());
-		textPanel.add(textDisplay, BorderLayout.CENTER);
-		//textPanel.setFont(new Font("Serif",0,40));
-
-		this.getContentPane().add(textPanel, BorderLayout.NORTH);
-
-		resultTextPanel = new JPanel();
-		resultTextPanel.setBackground(null);
-		resultTextPanel.setSize(RESULT_WIDTH, RESULT_HEIGHT);
-		resultTextPanel.setLayout(new BorderLayout());
-		resultTextPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Results"));
-		// resultTextPanel.add(resultText, BorderLayout.WEST);
-
-		resultText = new ResultPanel("This is the results~~~");
-		// resultText.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		resultText.run();
-		resultText.pack();
-		resultText.setPreferredSize(new Dimension(RESULT_WIDTH,RESULT_HEIGHT));
-		resultText.setFont(new Font("Serif",0,20));
-		
-		// resultText.setVisible(true);
-		resultTextPanel.add(resultText.getContentPane());
-
-		this.getContentPane().add(resultTextPanel, BorderLayout.WEST);
-		
-		barPanel = new JPanel();
-		barPanel.setBackground(null);
-		resultTextPanel.setSize(BAR_WIDTH, BAR_HEIGHT);
-		barPanel.setLayout(new BorderLayout());
-		barPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Graph"));
-		/*
-		 barPanel = new JPanel(); barPanel.setBackground(Color.blue);
-		 barPanel.setLayout(new BorderLayout()); //
-		 barPanel.add(resultBar,BorderLayout.NORTH); 
-		 resultBar = new ResultPanel(" Chart ", "5-grams");
-		 resultBar.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		 resultBar.pack(); // resultBar.setVisible(true);
-		 barPanel.add(resultBar.getContentPane());
-		 this.getContentPane().add(barPanel, BorderLayout.CENTER);
-		 */
-		 resultBar = new ResultPanel(" SUGGESTION~ ", "5-grams",
-					inputContexts, ngramsMap);
-			resultBar.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			resultBar.pack();
-			// resultBar.setVisible(true);
-			barPanel.add(resultBar.getContentPane());
-			
-			this.getContentPane().add(barPanel, BorderLayout.CENTER);
-		/*
-		 * JButton redButton = new JButton("Red");
-		 * redButton.setBackground(Color.WHITE);
-		 * redButton.addActionListener(this); barPanel.add(redButton); //creat
-		 * bar panel
-		 */
-
-		btmPanel = new JPanel();
-		btmPanel.setBackground(Color.LIGHT_GRAY);
-		btmPanel.setLayout(new FlowLayout());
-
-		JButton blueButton = new JButton("Predict");
-		blueButton.setBackground(Color.WHITE);
-		blueButton.addActionListener(this);
-		btmPanel.add(blueButton);
-
-		JButton blackButton = new JButton("Black");
-		blackButton.setBackground(Color.WHITE);
-		blackButton.addActionListener(this);
-		btmPanel.add(blackButton);
-
-		this.getContentPane().add(btmPanel, BorderLayout.SOUTH);
+	public NGramGUI(String arg0) throws HeadlessException {
+		super(arg0);
 	}
 
-	/*
-	 * judge whether the input is valid or invalid if valid : cut every phrase
-	 * from the input,by "," return the string[] input if invalid : throw
-	 * exception,clear the resultText area
-	 */
+	private void createGUI() {
+		setSize(WIDTH, HEIGHT);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(new BorderLayout());
+		//
+		createInputAreaGUI();
+		createResultDispalyGUI();
+		createPredictButtonGUI();
+	}
+
+	private void createPredictButtonGUI() {
+		buttomPanel = new JPanel();
+		buttomPanel.setLayout(new FlowLayout());
+		predictionButton = new JButton("PREDICT");
+		predictionButton.addActionListener(this);
+		predictionButton.setBackground(Color.PINK);
+		buttomPanel.add(predictionButton);
+		this.getContentPane().add(buttomPanel, BorderLayout.PAGE_END);
+	}
+
+	// create result area
+	// 1.the display text area
+	// 2.the bar display text area
+	private void createResultDispalyGUI() {
+		//creat the display area for showing the results
+		resultsPanel = new ResultPanel();
+		resultsPanel
+				.setPreferredSize(new Dimension(RESULT_WIDTH, RESULT_HEIGHT));
+		this.getContentPane().add(resultsPanel, BorderLayout.LINE_START);
+		
+		//creat the display area for showing the bar results
+		resultsBarPanel = new assign2.gui.ChartPanel();
+		resultsBarPanel.setFont(Font);
+		this.getContentPane().add(resultsBarPanel, BorderLayout.CENTER);
+	}
+
+	// this is the methods to create input text area
+	private void createInputAreaGUI() {
+		//create textPanel
+		textAreaPanel = new JPanel();
+		textAreaPanel.setBorder(new TitledBorder(new LineBorder(Color.BLACK, 1,
+				true), "Input Area~", TitledBorder.CENTER, TitledBorder.TOP));
+		textAreaPanel.setBackground(Color.PINK);
+		textAreaPanel.setPreferredSize(new Dimension(TEXTPANEL_WIDTH,
+				TEXTPANEL_HEIGHT));
+		textAreaPanel.setLayout(new FlowLayout());
+		textAreaPanel
+				.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		
+		//create input label, then add into textAreaPanel
+		JLabel inputLabel = new JLabel("Input text: ");
+		inputLabel.setFont(Font);
+		textAreaPanel.add(inputLabel);
+
+		//create text display JTextField(), then add into textAreaPanel
+		textDisplay = new JTextField();
+		textDisplay.setPreferredSize(new Dimension(TEXT_WIDTH, TEXT_HEIGHT));
+		textDisplay.setFont(Font);
+		textAreaPanel.add(textDisplay);
+
+		//create prediction number label, then add into textAreaPanel
+		JLabel predictionsNumberLabel = new JLabel("prediction Number: ");
+		predictionsNumberLabel.setFont(Font);
+		textAreaPanel.add(predictionsNumberLabel);
+		
+		//create prediction number text field, then add into textAreaPanel 
+		predictionsNum = new JTextField(10);
+		predictionsNum.setPreferredSize(new Dimension(PNUM_WIDTH, PNUM_HEIGHT));
+		predictionsNum.setFont(Font);
+		predictionsNum.setText("5");
+		textAreaPanel.add(predictionsNum);
+		
+		//add the textAreaPanel into window
+		this.getContentPane().add(textAreaPanel, BorderLayout.PAGE_START);
+	}
+
 	private String[] parseInput(String text) throws NGramException {
 		boolean VALID = false;
 		String[] arrayContexts = null;
-		String str3 = "^[0-9a-zA-Z ,']+[0-9a-zA-Z ']$";
-		// System.out.println(match(,));
-		Pattern pattern = Pattern.compile(str3, Pattern.CASE_INSENSITIVE);
+		String str = "^[0-9a-zA-Z ,']+[0-9a-zA-Z ']$";
+		
+		Pattern pattern = Pattern.compile(str, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(text);
+		//Judge whether the input is valid or invalid if valid 
 		VALID = matcher.matches();
 
 		System.out.println(matcher.matches());
-
+		
 		if (VALID == true) {
+			//If valid : cut every phrase
+			//from the input,by "," return the string[]
 			arrayContexts = text.split(",");
+			
 		} else {
-			throw new NGramException("");
+			//if not valid : throw
+			//exception
+			throw new NGramException("invalid input!");
 		}
 		return arrayContexts;
 
 	}
+	//according to the input, display the results
+	private String displayResults(String[] searchTextArr, NGramStore ngramMap) {
+		StringBuffer ngramBuffer = new StringBuffer();
+		for (String s : searchTextArr) {
+			NGramNode node = (NGramNode) ngramMap.getNGram(s);
+			if (node == null) {
+				ngramBuffer.append("No ngram predictions were returned.")
+						.append("\n");
+				ngramBuffer.append("Please try another query.").append("\n\n");
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
-		String buttonString = e.getActionCommand();
-
-		String textString = textDisplay.getText();// get the input
-
-		String[] phrase = null;// store valid input
-
-		String aResult = null;// store the result
-
-		boolean HAVERESULT = false;// store whether phrase have predictions
-
-		this.ngramsMap = new NGramStore();
-
-		/*
-		 * judge whether the input is valid or invalid if valid : cut every
-		 * phrase from the input,by "," return the string[] input if invalid :
-		 * throw exception,clear the resultText area
-		 */
-		try {
-			phrase = parseInput(textString);
-			// inputContexts = Arrays.asList(arrayContexts);
-			inputContexts = new ArrayList<String>(Arrays.asList(phrase));
-
-			// search each result of every phrase.
-			for (String ngramsContext : inputContexts) {
-				// try {
-
-				HAVERESULT = ngramsMap.getNGramsFromService(ngramsContext,
-						MAXRESULTS);
-
-				/*
-				 * search the predictions of input, if no result, return false.
-				 * if yes, store the result.
-				 */
-				if (HAVERESULT == false) {// no results
-					if(aResult == null){
-						aResult = "NGram Results for Query: " + ngramsContext
-								+ "\n" + "No results were retured for this phrase"
-								+ "\n" + "\n";
-					}
-					else{
-					aResult += "NGram Results for Query: " + ngramsContext
-							+ "\n" + "No results were retured for this phrase"
-							+ "\n" + "\n";
-					}
-					// inputContexts.remove(ngramsContext);
-					textResults.add(aResult);
-					// add the no results display texts into this list
-					inputNoResultContexts.add(ngramsContext);
-
-				} else if (HAVERESULT == true) {// have result
-					if(aResult ==null){
-						aResult = ngramsMap.toString();
-					}
-					else{
-					aResult += ngramsMap.toString();
-					}
-					textResults.add(aResult);
-				}
-
+			} else {
+				ngramBuffer.append("NGram Results for Query: ");
+				ngramBuffer.append(s);
+				ngramBuffer.append("\n");
+				ngramBuffer.append(node.toString());
+				ngramBuffer.append("\n");
 			}
-			// delete phrase that have no results
-			for (String s : inputNoResultContexts) {
-				inputContexts.remove(s);
-			}
-			// users press predict button
-			if (buttonString.equals("Predict")) {
-				//display the results of input
-				for (String output : textResults) {
-					this.resultText.SetResultText(output);
-				}
-				resultBar.updateChart(inputContexts, ngramsMap);
-				barPanel.add(resultBar.getContentPane());
-				
-				this.getContentPane().add(barPanel, BorderLayout.CENTER);
-				/*
-				barPanel = new JPanel();
-				barPanel.setBackground(Color.blue);
-				barPanel.setLayout(new BorderLayout());
-*/
-				//creat the bar to display the result
-				/*
-				resultBar = new ResultPanel(" SUGGESTION~ ", "5-grams",
-						inputContexts, ngramsMap);
-				resultBar.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				resultBar.pack();
-				// resultBar.setVisible(true);
-				barPanel.add(resultBar.getContentPane());
-				
-				this.getContentPane().add(barPanel, BorderLayout.CENTER);
-*/
-				//System.out.println("Success!");
-
-				// this.textDisplay.setBackground(Color.BLUE);
-				// this.textDisplay.setForeground(Color.WHITE);
-
-			} else if (buttonString.equals("Black")) {
-				// this.textDisplay.setBackground(Color.BLACK);
-				// this.textDisplay.setForeground(Color.GREEN);
-				JOptionPane.showMessageDialog(this, "Invalid input!", "Error~",
-						JOptionPane.ERROR_MESSAGE);
-			}
-			
-			//barPanel.updateUI();
-
-		} catch (NGramException exception) {
-			JOptionPane.showMessageDialog(this, "Invalid input!", "Error~",
-					JOptionPane.ERROR_MESSAGE);
-			this.resultText.SetResultText("  ");
 		}
+		return ngramBuffer.toString();
 	}
 
+	/**
+	 * @see java.lang.Runnable#run()
+	 */
 	@Override
 	public void run() {
 		createGUI();
@@ -354,5 +238,144 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 		this.pack();
 		this.setVisible(true);
 	}
+
+	/*
+	 * Helper method to search and show the results on GUI
+	 * 
+	 * @param seachNumber - Search for number of results
+	 * 
+	 * @param searchTextArr - Search for number of suggestions
+	 */
+	@SuppressWarnings("null")
+	private void predictionShowResults(int predictionNumber, String[] inputText) {
+		// Use LinkedHashSet to ensure there are no duplicated texts to search
+		Set<String> input = new LinkedHashSet<String>(Arrays.asList(inputText));
+		Set<String> inputHaveResults = new LinkedHashSet<String>(Arrays.asList(inputText));
+		String[] inputHaveResultsArray = null;
+		boolean HAVERESULTS = false;
+		((ResultPanel) resultsPanel).SetResultText(" ");
+		((assign2.gui.ChartPanel) resultsBarPanel).clearResultChart();
+		
+		for (String s : input) {
+			try {
+				//Get the predictions from the service
+				HAVERESULTS = ngramsMap.getNGramsFromService(s, predictionNumber);
+				//If the phrase have no results, then delete that from the list 
+				if(HAVERESULTS == false){
+					inputHaveResults.remove(s);
+				}
+				else if(HAVERESULTS == true){
+					
+				}
+				
+			} catch (NGramException e1) {
+				// If a correct result is not retrieved from the NGramService,
+				// Then show the warning
+				JOptionPane.showMessageDialog(this,
+						"Please input valid contexts!");
+				return;
+			}
+
+		}
+		//Change the list to string[] 
+		inputHaveResultsArray = new String[inputHaveResults.size()];
+		int index = 0;
+		for(String s:inputHaveResults){	
+		inputHaveResultsArray[index] = s;
+		index++;
+		}
+		
+		String resultsString = displayResults(input.toArray(new String[input.size()]),
+				ngramsMap);
+		// Display the results on the text field 
+		((ResultPanel) resultsPanel).SetResultText(resultsString);
+		// Display the results by using the bar
+		((assign2.gui.ChartPanel) resultsBarPanel).ShowResultBar(inputHaveResultsArray,
+				ngramsMap);
+	}
+
+	/*
+	 * Disabling the text areas and button components on the GUI, after
+	 * completion of search
+	 */
+	private void disableComponent() {
+		predictionButton.setText("Searching...");
+		predictionButton.setEnabled(false);
+		textDisplay.setEnabled(false);
+		predictionsNum.setEnabled(false);
+	}
+
+	/*
+	 * Enabling the text areas and button components on the GUI, after
+	 * completion of search
+	 */
+	private void EnableComponent() {
+		predictionButton.setText("Search");
+		predictionButton.setEnabled(true);
+		textDisplay.setEnabled(true);
+		predictionsNum.setEnabled(true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		String buttonString = e.getActionCommand();
+
+		String textString = textDisplay.getText();// get the input
+		String predictionsNumString = predictionsNum.getText();
+
+		this.ngramsMap = new NGramStore();
+
+		if (buttonString.equals("PREDICT")) {
+			
+			//Judge whether or not the input prediction number is valid: positive integer 
+			try {
+				predictionsNumber = Integer.valueOf(predictionsNumString);
+				if (predictionsNumber <= 0) {
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"Please input positive integer!");
+				return;
+			}
+			} catch (Exception e2) {
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"Please input positive integer!");
+				return;
+			}
+			
+			//Judge whether or not the input contexts are valid
+			try {
+				inputContexts = parseInput(textString);
+			} catch (NGramException e3) {
+
+				JOptionPane.showMessageDialog(this,
+						"Please input valid contexts!");
+				return;
+			}
+			
+
+			// Opening a new thread to handle the suggestion searching
+			// processing
+			myThread = new Thread() {
+				@Override
+				public void run() {
+					// During search, disabling the GUI components i.e., the
+					// text areas and button
+					disableComponent();
+					predictionShowResults(predictionsNumber, inputContexts);
+					// After searching, enabling all the GUI components
+					EnableComponent();
+				}
+			};
+			myThread.start();
+
+			//System.out.println(predictionsNumber);
+
+		}
+	}
+
 
 }
