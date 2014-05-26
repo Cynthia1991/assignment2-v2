@@ -53,51 +53,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * ResultPanel
+ * 
+ * a class extends JPanel, to create and control the results display area 
  * @version 1.0
  * @author QianFu&ChuanLi
  * @created 2014.5.17.
  */
-/* a simple panel to hold a text area to allow text based reporting of results */
-@SuppressWarnings("serial")
+
 public class ResultPanel extends JPanel {
 	
-	public static final int WIDTH = 600;
-	public static final int HEIGHT =500;
-
-	private JPanel btmPanel;
-	private JPanel textPanel;
-	private JTextArea textDisplay;
-	private JPanel barPanel;
-	private JPanel resultTextPanel;
-	private ChartPanel chartPanel;
-	private JFreeChart chart;
-	private CategoryDataset dataset;
-	private String chartTitle;
+	/**  
+	 * @fields serialVersionUID  
+	 */  
 	
-	private JScrollPane resultScroll; //add
-	private JMenuBar resultMenuBar;
+	private static final long serialVersionUID = 1L;
+	private static int SCROLL_WIDTH = 600;
+	private static int SCROLL_HEIGHT =700;
+	
+	private JTextArea textDisplay;
+	private JScrollPane resultScroll; 
 	private static java.awt.Font Font = new Font("Serif", 0, 20);
 
 	public ResultPanel() {
+		//Set the layout, and title border 
 		setLayout(new BorderLayout());
-		setBorder(new TitledBorder(new LineBorder(Color.BLACK, 1, true),"Results~", TitledBorder.CENTER, TitledBorder.TOP));
+		setBorder(new TitledBorder(new LineBorder(Color.GRAY, 1, true),"Results~", TitledBorder.CENTER, TitledBorder.TOP));
+		
+		//Create the text area
 		textDisplay = new JTextArea("");
-
 		textDisplay.setEditable(false);
 		textDisplay.setFont(Font);
-		//resultText = new StringBuffer();
+		
+		//Create the scroll
 		resultScroll = new JScrollPane(textDisplay,
 		JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 		JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		resultScroll.setPreferredSize(new Dimension(300,HEIGHT));
-		//scrollPane.setBounds(10,60,780,500);
-		//scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		resultScroll.setPreferredSize(new Dimension(SCROLL_WIDTH,SCROLL_HEIGHT));
 		this.add(resultScroll, BorderLayout.CENTER);
 	}
 	
-	@SuppressWarnings("unused")
+	//@SuppressWarnings("unused")
 	public void SetResultText(String result) {
 		StringBuffer resultText = new StringBuffer();
+		
+		//Display the results on the results text area
 		resultText.append(result);
 		resultText.append("\n");
 		textDisplay.setText(resultText.toString());
