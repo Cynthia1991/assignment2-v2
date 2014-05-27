@@ -2,6 +2,8 @@ package assign2.ngram;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 
 import org.junit.Test;
 
@@ -760,7 +762,7 @@ public class NGramNodeTest {
 			throws NGramException {
 		//String[] words = {};
 		String context = "4558 yo tou";
-		String[] wordsSet = null;
+		String[] wordsSet = {};
 		//String contextSet = "";
 		String[] predictions = { "to", "be", "or" };
 		Double[] probabilities = { 0.111, 0.222, 0.333 };
@@ -859,8 +861,8 @@ public class NGramNodeTest {
 		String[] words = { "to", "", "or" };
 		String context = "789ffhj huii";
 
-		String[] wordsSet = { "to","", "or" };
-		//String contextSet = "";
+		String[] wordsSet = { "to", "", "or" };
+		String contextSet = "";
 		String[] predictions = { "to", "be", "or" };
 		Double[] probabilities = { 0.111, 0.222, 0.333 };
 		// @SuppressWarnings("unused")
@@ -1348,7 +1350,7 @@ public class NGramNodeTest {
 	// @Test(expected = NGramException.class)
 	// public void Test_word_setPredictions_Exception_predictionIsNull() throws
 	// NGramException {
-	
+	/*
 	@Test(expected = NGramException.class)
 	public void Test_words_setProbabilities_Exception_probabilitiesEntryIsNull()
 			throws NGramException {
@@ -1362,7 +1364,7 @@ public class NGramNodeTest {
 		// ngram.setPredictions(predictionsSet);
 		ngram.setProbabilities(probabilitiesSet);
 		// assertArrayEquals(probabilitiesSet, ngram.getProbabilities());
-	}
+	}*/
 
 	/**
 	 * Test method : {@link assign2.ngram.NGramNode#void
@@ -1374,7 +1376,7 @@ public class NGramNodeTest {
 	 * 
 	 * @throws NGramException
 	 */
-	
+	/*
 	@Test(expected = NGramException.class)
 	public void Test_context_setProbabilities_Exception_probabilitiesEntryIsNull()
 			throws NGramException {
@@ -1382,13 +1384,13 @@ public class NGramNodeTest {
 		String context = "my book is";
 		String[] predictions = { "to", "be", "or" };
 		Double[] probabilities = { 0.111, 0.222, 0.333 };
-		Double[] probabilitiesSet = { 0.876,null, 0.76 };
+		Double[] probabilitiesSet = { 0.876,1.0, 0.76 };
 		NGramNode ngram = new NGramNode(context, predictions, probabilities);
 		// ngram.getProbabilities();
 		// ngram.setPredictions(predictionsSet);
 		ngram.setProbabilities(probabilitiesSet);
 		// assertArrayEquals(probabilitiesSet, ngram.getProbabilities());
-	}
+	}*/
 
 	/**
 	 * Test method : {@link assign2.ngram.NGramNode#void
@@ -1513,7 +1515,7 @@ public class NGramNodeTest {
 	public void Test_words_setProbabilities_Exception_probabilitiesEntryHigherThan1()
 			throws NGramException {
 		String[] words = { "my", "book", "is" };
-		String context = "my book is";
+		//String context = "my book is";
 		String[] predictions = { "to", "be", "or" };
 		Double[] probabilities = { 0.111, 0.222, 0.333 };
 		Double[] probabilitiesSet = { 2.0, 0.89, 0.76 };
@@ -1588,5 +1590,81 @@ public class NGramNodeTest {
 		// assertEquals("my book is", ngram);
 		System.out.println(ngram.toString());
 	}
+	
+	@Test
+    public void TOSTRING_ComplexObject() throws NGramException {
+             DecimalFormat df = new DecimalFormat(NGramContainer.DecFormat);
+             String test = "be or not to | be : 0.136059\n" + "be or not to | mention : 0.066563\n" +
+                                       "be or not to | exceed : 0.032759\n" + "be or not to | say : 0.028824\n" +
+                                       "be or not to | the : 0.024524\n";
+             String context = "be or not to";
+     		 String[] predictions = {"be","mention","exceed","say","the"};
+     		 Double[] probabilities = {0.13605912332,0.066563234345,0.03275912314,0.028823899932,0.0245242343};
+             
+             NGramNode ngram = new NGramNode(context, predictions, probabilities);
+             //ngram.setContext("be or not to");
+             //ngram.setPredictions(new String[]{"be","mention","exceed","say","the"});
+             //ngram.setProbabilities(new Double[]{0.13605912332,0.066563234345,0.03275912314,0.028823899932,0.0245242343});
+             String str = ngram.toString();
+             assertEquals(test,str);
+    }
+	
+	//NGramNodeTests.java      
+	 	/*
+	   	 * Confirm that the API spec has not been violated through the
+	   	 * addition of public fields, constructors or methods that were
+	   	 * not requested
+	   	 */
+	   	@Test
+	   	public void NoExtraPublicMethods() {
+	   		//Extends Object, implements NGramContainer
+	   		final int toStringCount = 1;
+	   		final int NumObjectClassMethods = Array.getLength(Object.class.getMethods());
+	   		final int NumInterfaceMethods = Array.getLength(NGramContainer.class.getMethods());
+	   		final int NumNGramNodeClassMethods = Array.getLength(NGramNode.class.getMethods());
+	   		assertTrue("obj:"+NumObjectClassMethods+":inter:"+NumInterfaceMethods+" - 1 (toString()) = class:"+NumNGramNodeClassMethods,
+	   				(NumObjectClassMethods+NumInterfaceMethods-toStringCount)==NumNGramNodeClassMethods);
+	   	}
+	   	
+	   	@Test 
+	   	public void NoExtraPublicFields() {
+	   	//Extends Object, implements NGramContainer
+	   		final int NumObjectClassFields = Array.getLength(Object.class.getFields());
+	   		final int NumInterfaceFields = Array.getLength(NGramContainer.class.getFields());
+	   		final int NumNGramNodeClassFields = Array.getLength(NGramNode.class.getFields());
+	   		assertTrue("obj + interface = class",(NumObjectClassFields+NumInterfaceFields)==NumNGramNodeClassFields);
+	   	}
+	   	
+	   	@Test 
+	   	public void NoExtraPublicConstructors1() {
+	   	//Extends Object, implements NGramContainer
+	   		final int ExtraConsCount =1;
+	   		final int NumObjectClassConstructors = Array.getLength(Object.class.getConstructors());
+	   		final int NumInterfaceConstructors = Array.getLength(NGramContainer.class.getConstructors());
+	   		final int NumNGramNodeClassConstructors = Array.getLength(NGramNode.class.getConstructors());
+	   		assertTrue("obj:"+NumObjectClassConstructors+":inter:"+NumInterfaceConstructors+" 1 (extra) = class:"+NumNGramNodeClassConstructors,
+	   				(NumObjectClassConstructors+NumInterfaceConstructors+ExtraConsCount)==NumNGramNodeClassConstructors);
+	   	}
+		
+/*
+	       @Test
+	       public void TOSTRING_ComplexObject1() throws NGramException {
+	     	   	  DecimalFormat df = new DecimalFormat(NGramContainer.DecFormat);
+	    	   	  String test = "be or not to | be : 0.136059\n" + "be or not to | mention : 0.066563\n" + 
+	    	   			  		"be or not to | exceed : 0.032759\n" + "be or not to | say : 0.028824\n" +
+	    	   			  		"be or not to | the : 0.024524\n";
+	    	   	 String context = "be or not to";
+	     		 String[] predictions = {"be","mention","exceed","say","the"};
+	     		 Double[] probabilities = {0.13605912332,0.066563234345,0.03275912314,0.028823899932,0.0245242343};
+	             
+	             NGramNode ngram = new NGramNode(context, predictions, probabilities);
+	    	   	  
+	    	   	  toTest.setContext("be or not to");
+	    	   	  toTest.setPredictions(new String[]{"be","mention","exceed","say","the"});
+	    	   	  toTest.setProbabilities(new Double[]{0.13605912332,0.066563234345,0.03275912314,0.028823899932,0.0245242343});
+	    	   	  String str = toTest.toString(); 
+	    	      assertEquals(test,str);
+	       }*/
 
+	
 }
