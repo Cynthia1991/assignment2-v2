@@ -14,6 +14,7 @@ import assign2.examples.jfreechart.BarChart;
 import assign2.examples.swing.SimpleFrame;
 
 /**
+ * 
  * @version 1.0
  * @author QianFu&ChuanLi
  * @created 2014.5.17.

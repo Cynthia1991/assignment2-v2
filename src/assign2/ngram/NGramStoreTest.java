@@ -223,8 +223,37 @@ Parameters:ngram - - ngram to be added*/
 		String context = "to be or";
 		ngramsMap.getNGramsFromService(context, MAXRESULTS);
 		assertEquals(true, ngramsMap.getNGramsFromService(context, MAXRESULTS));
-		
+		assertNotNull(ngramsMap.getNGram("to be or"));
+		assertNotNull(ngramsMap.toString());
 		//System.out.println(ngramsMap.toString());
+	}
+	/**
+	 * Test method for {@link assign2.ngram.NGramStore#getNGramsFromService(java.lang.String, int)}.
+	 * If the results number is less than 0,then throw the NGramException
+	 * 
+	 * return true and store the NGram in the Map if the service returns at least one result
+	 * 
+	 * @throws NGramException 
+	 */
+	@Test(expected = NGramException.class)
+	public void Test_GetNGramsFromService_ResultsNumLessThan0() throws NGramException {
+		String context = "to be or";
+		ngramsMap.getNGramsFromService(context, -1);
+		//assertEquals(false, ngramsMap.getNGramsFromService(context, -1));
+	}
+	/**
+	 * Test method for {@link assign2.ngram.NGramStore#getNGramsFromService(java.lang.String, int)}.
+	 * If the results number is 0,then throw the NGramException
+	 * 
+	 * return true and store the NGram in the Map if the service returns at least one result
+	 * 
+	 * @throws NGramException 
+	 */
+	@Test
+	public void Test_GetNGramsFromService_ResultsNum0() throws NGramException {
+		String context = "to be or";
+		//assertEquals(false, ngramsMap.getNGramsFromService(context, 0));
+		assertEquals(true, ngramsMap.getNGramsFromService("a", 5));
 	}
 	/**
 	 * Test method for {@link assign2.ngram.NGramStore#getNGramsFromService(java.lang.String, int)}.
@@ -239,6 +268,7 @@ Parameters:ngram - - ngram to be added*/
 		String context = "gghjjjhk jkhakjjwlqiuu hjaklakjLJWQ";
 		//ngramsMap.getNGramsFromService(context, MAXRESULTS);
 		assertEquals(false, ngramsMap.getNGramsFromService(context, MAXRESULTS));
+		assertNull(ngramsMap.getNGram("gghjjjhk jkhakjjwlqiuu hjaklakjLJWQ"));
 		//System.out.println(ngramsMap.toString());
 	}
 	/**

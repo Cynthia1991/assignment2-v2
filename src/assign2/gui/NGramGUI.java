@@ -97,13 +97,15 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 	private String[] inputContexts;
 
 	private static java.awt.Font Font = new Font("Serif", 0, 20);
-	private Thread myThread;
+	private Thread myThread1;
+	private Thread myThread2;
 	private JButton predictionButton;
 	private JButton exitButton;
 	private JButton chartButton;
 	private JButton hideChartButton;
 	
 	private boolean START_INPUT = false;
+	private String[] inputHaveResultsArray = null;
 	// helper method to construct the GUI
 
 	/**
@@ -239,8 +241,6 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 	private void createResultDispalyGUI() {
 		// creat the display area for showing the results
 		resultsPanel = new ResultPanel();
-		//resultsPanel
-		//		.setPreferredSize(new Dimension(RESULT_WIDTH, RESULT_HEIGHT));
 		this.getContentPane().add(resultsPanel, BorderLayout.CENTER);
 	}
 
@@ -270,7 +270,7 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 	private String[] parseInput(String text) throws NGramException {
 		boolean VALID = false;
 		String[] arrayContexts = null;
-		String str = "^[0-9a-zA-Z ,']+[0-9a-zA-Z ']$";
+		String str = "^[0-9a-zA-Z ,']+$";
 
 		Pattern pattern = Pattern.compile(str, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(text);
@@ -329,23 +329,22 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 		this.setVisible(true);
 	}
 
-	/*
-	 * Helper method to search and show the results on GUI
+	/** 
+	 * Predict the results  
+	 * @param predictionNumber
+	 * @param inputText   
 	 * 
-	 * @param seachNumber - Search for number of results
-	 * 
-	 * @param searchTextArr - Search for number of suggestions
 	 */
-	//@SuppressWarnings("null")
 	private void predictionShowResults(int predictionNumber, String[] inputText) {
-		// Use LinkedHashSet to ensure there are no duplicated texts to search
+		//store the inputText
 		Set<String> input = new LinkedHashSet<String>(Arrays.asList(inputText));
+		//store the contexts from the input which have results
 		Set<String> inputHaveResults = new LinkedHashSet<String>(
 				Arrays.asList(inputText));
-		String[] inputHaveResultsArray = null;
+		//store the contexts from the input which have results in array
+		this.inputHaveResultsArray = null;
 		boolean HAVERESULTS = false;
 		((ResultPanel) resultsPanel).SetResultText(" ");
-		//((assign2.gui.ChartPanel) resultsBarPanel).clearResultsChart();
 
 		for (String s : input) {
 			try {
@@ -355,13 +354,13 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 				// If the phrase have no results, then delete that from the list
 				if (HAVERESULTS == false) {
 					inputHaveResults.remove(s);
-				} else if (HAVERESULTS == true) {
-
-				}
-
+				} 
 			} catch (NGramException e1) {
-				// If a correct result is not retrieved from the NGramService,
+				// If a correct result is not get the NGramService,
 				// Then show the warning
+				if(resultsPanel != null){
+					  ((ResultPanel) resultsPanel).SetResultText(" ");
+					}
 				JOptionPane.showMessageDialog(this,
 						"Please input valid contexts!");
 				return;
@@ -380,9 +379,6 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 				input.toArray(new String[input.size()]), ngramsMap);
 		// Display the results on the text field
 		((ResultPanel) resultsPanel).SetResultText(resultsString);
-		// Display the results by using the bar
-		//((assign2.gui.ChartPanel) resultsBarPanel).ShowResultChart(
-			//	inputHaveResultsArray, ngramsMap);
 	}
 	
 	/**  
@@ -390,14 +386,22 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 	 * @param inputText   
 	 *  
 	 */
-	private void predictionShowResultsChart(int predictionNumber, String[] inputText) {
-		// Use LinkedHashSet to ensure there are no duplicated texts to search
+	private void predictionShowResultsBar(String[] inputResultsText) {
+		//this.inputHaveResultsArray = null;
+		((assign2.gui.ChartPanel) resultsBarPanel).clearResultsChart();
+		// Display the results by using the bar chart
+		((assign2.gui.ChartPanel) resultsBarPanel).DisplayResultChart(
+				inputResultsText, ngramsMap);
+	}
+	/*private void predictionShowResultsChart(int predictionNumber, String[] inputText) {
+		//store the inputText
 		Set<String> input = new LinkedHashSet<String>(Arrays.asList(inputText));
+		//store the contexts from the input which have results
 		Set<String> inputHaveResults = new LinkedHashSet<String>(
 				Arrays.asList(inputText));
+		//store the contexts from the input which have results in array
 		String[] inputHaveResultsArray = null;
 		boolean HAVERESULTS = false;
-		((ResultPanel) resultsPanel).SetResultText(" ");
 		((assign2.gui.ChartPanel) resultsBarPanel).clearResultsChart();
 
 		for (String s : input) {
@@ -412,9 +416,12 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 
 				}
 
-			} catch (NGramException e1) {
-				// If a correct result is not retrieved from the NGramService,
+			} catch (Exception e1) {
+				// If a correct result is not get from the NGramService,
 				// Then show the warning
+				if(resultsPanel != null){
+					  ((ResultPanel) resultsPanel).SetResultText(" ");
+					}
 				JOptionPane.showMessageDialog(this,
 						"Please input valid contexts!");
 				return;
@@ -428,49 +435,59 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 			inputHaveResultsArray[index] = s;
 			index++;
 		}
-
 		String resultsString = displayResults(
 				input.toArray(new String[input.size()]), ngramsMap);
 		// Display the results on the text field
 		((ResultPanel) resultsPanel).SetResultText(resultsString);
 		// Display the results by using the bar chart
-		((assign2.gui.ChartPanel) resultsBarPanel).ShowResultChart(
+		((assign2.gui.ChartPanel) resultsBarPanel).DisplayResultChart(
 				inputHaveResultsArray, ngramsMap);
-	}
+	}*/
 
-	/*
-	 * Disabling the text areas and button components on the GUI, after
-	 * completion of search
+	
+	/**  
+	 *    
+	 * When predicting, disabled the prediction button 
 	 */
-	private void disableComponent() {
-		predictionButton.setText("Searching...");
-		predictionButton.setEnabled(false);
+	private void predicting() {
+		//resultText.setText("Please waiting...");
+		
 		textDisplay.setEnabled(false);
 		predictionsNum.setEnabled(false);
+		predictionButton.setEnabled(false);
+		chartButton.setEnabled(false);
+		
+		
 	}
 
-	/*
-	 * Enabling the text areas and button components on the GUI, after
-	 * completion of search
+	/**  
+	 *    
+	 * When predicting, active the prediction button 
 	 */
-	private void EnableComponent() {
-		predictionButton.setText("Search");
-		predictionButton.setEnabled(true);
+	private void afterPredict() {
+		
 		textDisplay.setEnabled(true);
 		predictionsNum.setEnabled(true);
+		predictionButton.setEnabled(true);
+		chartButton.setEnabled(true);
 	}
 
+	/*  
+	(non-Javadoc)  
+	* @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)  
+	*/
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
 		String buttonString = e.getActionCommand();
 
-		String textString = textDisplay.getText();// get the input
-		String predictionsNumString = predictionsNum.getText();
 
-		this.ngramsMap = new NGramStore();
 		//chartButton.setEnabled(false);
 		if (buttonString.equals("PREDICT")) {
+			String textString = textDisplay.getText();// get the input
+			String predictionsNumString = predictionsNum.getText();
+			createResultDispalyChartGUI();
+			this.ngramsMap = new NGramStore();
 			if(resultsBarPanel!= null){
 				resultsBarPanel.setVisible(false);
 				}
@@ -495,6 +512,10 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 				if(textDisplay.getText() =="    Click here input your context ~" ){
 					JOptionPane.showMessageDialog(this,
 							"Please input valid contexts!");
+					if(resultsPanel != null){
+					  ((ResultPanel) resultsPanel).SetResultText(" ");
+					}
+					
 					return;
 				}
 				inputContexts = parseInput(textString);
@@ -502,47 +523,38 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 
 				JOptionPane.showMessageDialog(this,
 						"Please input valid contexts!");
+				if(resultsPanel != null){
+				  ((ResultPanel) resultsPanel).SetResultText(" ");
+				}
 				return;
 			}
 
-			// Opening a new thread to handle the suggestion searching
-			// processing
-			 myThread = new Thread() {
-			 @Override
-			 public void run() {
-			// During search, disabling the GUI components i.e., the
-			// text areas and button
-			// disableComponent();
-			//chartButton.setEnabled(false);
-			//createResultDispalyGUI();
-			//createResultDispalyChartGUI();
-			
-			predictionShowResults(predictionsNumber, inputContexts);
-			chartButton.setEnabled(true);
-			
-			// After searching, enabling all the GUI components
-			// EnableComponent();
+			myThread1 = new Thread() {
+			@Override
+			public void run() {
+				//If the service is working, enable the button.
+				predicting();
+				predictionShowResults(predictionsNumber, inputContexts);
+				//chartButton.setEnabled(true);
+				afterPredict();
 			}
 			};
-			 myThread.start();
-
-			// System.out.println(predictionsNumber);
+			myThread1.start();
 
 		}
 		if (buttonString.equals("DISPLAY_CHART")) {
 			// Ask whether the user want to show chart
-			createResultDispalyGUI();
+			
 			createResultDispalyChartGUI();
-			//resultsPanel.setPreferredSize(new Dimension(RESULT_WIDTH, RESULT_HEIGHT));
-			predictionShowResultsChart(predictionsNumber, inputContexts);
-			resultsBarPanel.setVisible(true);
+			predictionShowResultsBar(inputHaveResultsArray);
 			hideChartButton.setEnabled(true);
 			chartButton.setEnabled(false);
 		}
 		if (buttonString.equals("HIDE_CHART")) {
 			// Ask whether the user want to hide the chart
+			resultsPanel.setVisible(true);
 			if(resultsBarPanel!= null){
-			resultsBarPanel.setVisible(false);
+				resultsBarPanel.setVisible(false);
 			}
 			hideChartButton.setEnabled(false);
 			chartButton.setEnabled(true);

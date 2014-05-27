@@ -117,7 +117,7 @@ public class ChartPanel extends JPanel{
 	 * @param node   
 	 * 
 	 */
-	public void ShowResultChart(NGramContainer ngram) {
+	public void DisplayResultChart(NGramContainer ngram) {
 		remove(chartPanel);
 		//Create the data 
 		dataset = createDataset(ngram);
@@ -137,7 +137,7 @@ public class ChartPanel extends JPanel{
 	 * @param store   
 	 * 
 	 */
-	public void ShowResultChart(String[] contexts, NGramMap ngramStore){
+	public void DisplayResultChart(String[] contexts, NGramMap ngramStore){
 		remove(chartPanel);
 		dataset = createDataset(contexts, ngramStore);
         chart = createChart(dataset, chartTitle );

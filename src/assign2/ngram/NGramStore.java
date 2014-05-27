@@ -144,7 +144,7 @@ public class NGramStore implements NGramMap {
 			this.addNGram(ngramContainer);
 			return true;
 
-		} catch (NGramException e) {
+		} catch (Exception e) {
 			throw new NGramException(
 					"ERROR: the NGramContainer cannot be created");
 		}
