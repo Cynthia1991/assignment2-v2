@@ -1,10 +1,4 @@
-/**  
- * @title ChartPanel.java  
- * @package assign2.gui  
- * @author kervin  
- * @version V1.0  
- * created 2014年5月17日  
- */
+
 package assign2.gui;
 
 import java.awt.BorderLayout;

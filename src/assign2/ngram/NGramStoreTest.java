@@ -267,8 +267,8 @@ public class NGramStoreTest {
 	@Test
 	public void Test_GetNGramsFromService_ResultsNum0() throws NGramException {
 		String context = "to be or";
-		// assertEquals(false, ngramsMap.getNGramsFromService(context, 0));
-		assertEquals(true, ngramsMap.getNGramsFromService("a", 5));
+		assertEquals(false, ngramsMap.getNGramsFromService(context, 0));
+		//assertEquals(true, ngramsMap.getNGramsFromService("a", 5));
 	}
 
 	/**
