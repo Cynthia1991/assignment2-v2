@@ -253,17 +253,6 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 		resultsBarPanel.setPreferredSize(new Dimension(BAR_WIDTH, BAR_HEIGHT));
 		this.getContentPane().add(resultsBarPanel, BorderLayout.EAST);
 	}
-	//Clear the results display chart GUI 
-	private void clearResultDispalyChartGUI() {
-		// Create the display area for showing the bar results
-		//resultsBarPanel = new assign2.gui.ChartPanel();
-		//resultsBarPanel.setFont(Font);
-		//resultsPanel.setPreferredSize(new Dimension(RESULT_WIDTH, RESULT_HEIGHT));
-		//resultsBarPanel.setPreferredSize(new Dimension(BAR_WIDTH, BAR_HEIGHT));
-		//this.getContentPane().add(resultsBarPanel, BorderLayout.EAST);
-		
-	}
-
 	private void createGUI() {
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
