@@ -9,6 +9,7 @@ package assign2.ngram;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,13 +33,6 @@ public class NGramStoreTest {
 
 	
 	private NGramStore ngramsMap;
-	private NGramNode ngram1;
-	private NGramNode ngram2;
-	private String[] words;
-	private String context1 = "to be or";
-	private String context2 = "my book is";
-	private String[] predictions;
-	private Double[] probabilities;
 	private int MAXRESULTS = 5;
 	
 	/*void addNGram(NGramContainer ngram)
@@ -61,28 +55,12 @@ Parameters:ngram - - ngram to be added*/
 	@Before
 	public void setUp() throws Exception {
 		ngramsMap = new NGramStore();
-		String[] words = { "my", "book", "is" };
-		String context1 = "my book is";
-		String context2 = "to be or";
-		String[] predictions = { "not", "be", "or" };
-		// String[] predictions = { "to", "be", "or" };
-		Double[] probabilities = { 0.111, 0.222, 0.333 };
 	    //ngram1 = new NGramNode(context, predictions, probabilities);
 		//ngram2 = new NGramNode(context, predictions, probabilities);
 		
 		
 	}
-
-	/**  
-	 * @throws java.lang.Exception   
-	 * @version 1.0  
-	 * @author kervin  
-	 * @created 2014年5月19日   
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-	/*-------------------------start test addNGram()----------------------------------------------------*/
+	/*-------------------------Start test addNGram()----------------------------------------------------*/
 	/**
 	 * Test method for
 	 * {@link assign2.ngram.NGramStore#addNGram(assign2.ngram.NGramContainer)}. <br/>
@@ -123,10 +101,6 @@ Parameters:ngram - - ngram to be added*/
 	 * @param ngram
 	 * @throws NGramException
 	 */
-	
-	//@Test(expected = NGramException.class)
-	//public void Test_words_setContextArrayString_Exception_wordsIsEmpty_Test()
-	
 	@Test
 	public void Test_addNGram_ExistContext() throws NGramException {
 		
@@ -146,7 +120,7 @@ Parameters:ngram - - ngram to be added*/
 
 	/*-------------------------End of test addNGram()----------------------------------------------------*/
 	
-	/*-------------------------start test RemoveNGram()----------------------------------------------------*/
+	/*-------------------------Start test RemoveNGram()----------------------------------------------------*/
 	/**
 	 * Test method for {@link assign2.ngram.NGramStore#removeNGram(java.lang.String)}.
 	 * Remove an ngram from the Map. 
@@ -196,7 +170,7 @@ Parameters:ngram - - ngram to be added*/
 	
 	/*-------------------------End of test RemoveNGram()----------------------------------------------------*/
 	
-	/*------------------------- test getNGram()----------------------------------------------------*/
+	/*-------------------------Star test getNGram()----------------------------------------------------*/
 	/**
 	 * Test method for {@link assign2.ngram.NGramStore#getNGram(java.lang.String)}.
 	 * Find the NGram associated with the context if it exists in the Map. 
@@ -236,7 +210,7 @@ Parameters:ngram - - ngram to be added*/
 	}
 	/*-------------------------End of test getNGram()----------------------------------------------------*/
 	
-	/*------------------------- test getNGramsFromService()----------------------------------------------------*/
+	/*-------------------------Start test getNGramsFromService()----------------------------------------------------*/
 	/**
 	 * Test method for {@link assign2.ngram.NGramStore#getNGramsFromService(java.lang.String, int)}.
 	 * Get the top maxResults ngrams returned from the service.
@@ -246,7 +220,6 @@ Parameters:ngram - - ngram to be added*/
 	 */
 	@Test
 	public void Test_GetNGramsFromService_Normal() throws NGramException {
-		
 		String context = "to be or";
 		ngramsMap.getNGramsFromService(context, MAXRESULTS);
 		assertEquals(true, ngramsMap.getNGramsFromService(context, MAXRESULTS));
@@ -299,14 +272,12 @@ Parameters:ngram - - ngram to be added*/
 	}
 	/*-------------------------End of test getNGramsFromService()----------------------------------------------------*/
 
-	/*-------------------------start test toString()----------------------------------------------------*/
+	/*-------------------------Start test toString()----------------------------------------------------*/
 	/**
 	 * Test method for {@link assign2.ngram.NGramStore#toString()}.
 	 * if only one ngram in the list,return the last ngram
 	 * @throws NGramException 
 	 */
-	
-	
 	@Test
 	public void test_ToString_one() throws NGramException {
 		//String context = "to be or";
@@ -325,8 +296,6 @@ Parameters:ngram - - ngram to be added*/
 	 * if some ngrams in the list,return the last ngram
 	 * @throws NGramException 
 	 */
-	
-	
 	@Test
 	public void test_ToString_moreThanOne() throws NGramException {
 		//String context = "to be or";
@@ -341,5 +310,42 @@ Parameters:ngram - - ngram to be added*/
 		System.out.println(ngramsMap.toString());
 		
 	}
+	/*-------------------------End of test toString()----------------------------------------------------*/
+	
+	//NgramStoreTests.java
 
+	  	/*
+	   	 * Confirm that the API spec has not been violated through the
+	   	 * addition of public fields, constructors or methods that were
+	   	 * not requested
+	   	 */
+	   	@Test
+	   	public void NoExtraPublicMethods() {
+	   		//Extends Object, implements NGramMap
+	   		final int toStringCount = 1;
+	   		final int NumObjectClassMethods = Array.getLength(Object.class.getMethods());
+	   		final int NumInterfaceMethods = Array.getLength(NGramMap.class.getMethods());
+	   		final int NumNGramStoreClassMethods = Array.getLength(NGramStore.class.getMethods());
+	   		assertTrue("obj:"+NumObjectClassMethods+":inter:"+NumInterfaceMethods+" - 1 (toString()) = class:"+NumNGramStoreClassMethods,
+	   				(NumObjectClassMethods+NumInterfaceMethods-toStringCount)==NumNGramStoreClassMethods);
+	   	}
+	   	
+	   	@Test 
+	   	public void NoExtraPublicFields() {
+	   	//Extends Object, implements NGramMap
+	   		final int NumObjectClassFields = Array.getLength(Object.class.getFields());
+	   		final int NumInterfaceFields = Array.getLength(NGramMap.class.getFields());
+	   		final int NumNGramStoreClassFields = Array.getLength(NGramStore.class.getFields());
+	   		assertTrue("obj + interface = class",(NumObjectClassFields+NumInterfaceFields)==NumNGramStoreClassFields);
+	   	}
+	   	
+	   	@Test 
+	   	public void NoExtraPublicConstructors() {
+	   	//Extends Object, implements NGramMap
+	   		final int NumObjectClassConstructors = Array.getLength(Object.class.getConstructors());
+	   		final int NumInterfaceConstructors = Array.getLength(NGramMap.class.getConstructors());
+	   		final int NumNGramStoreClassConstructors = Array.getLength(NGramStore.class.getConstructors());
+	   		assertTrue("obj:"+NumObjectClassConstructors+":inter:"+NumInterfaceConstructors+" = class:"+NumNGramStoreClassConstructors,
+	   				(NumObjectClassConstructors+NumInterfaceConstructors)==NumNGramStoreClassConstructors);
+	   	}
 }
