@@ -167,7 +167,7 @@ public class NGramNode implements NGramContainer {
 		boolean isValid = true;
 		if (doubleArray != null) {
 			for (Double d : doubleArray) {
-				if ((d == null) || (d <= 0) || (d > 1)) {
+				if ((d == null) ||Double.compare(d, 0.0) <= 0 || Double.compare(d, 1.0) > 0) {
 					isValid = false;
 					break;
 				}
