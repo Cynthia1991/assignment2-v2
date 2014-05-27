@@ -92,7 +92,6 @@ public class ResultPanel extends JPanel {
 	// @SuppressWarnings("unused")
 	public void SetResultText(String result) {
 		StringBuffer resultText = new StringBuffer();
-
 		// Display the results on the results text area
 		resultText.append(result);
 		resultText.append("\n");

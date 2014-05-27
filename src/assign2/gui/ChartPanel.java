@@ -46,7 +46,7 @@ public class ChartPanel extends JPanel {
 	private JFreeChart chart;
 	private org.jfree.chart.ChartPanel chartPanel;
 	private String chartTitle;
-
+//
 	/**
 	 * Constructor Method
 	 */

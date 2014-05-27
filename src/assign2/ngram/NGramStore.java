@@ -19,7 +19,6 @@ public class NGramStore implements NGramMap {
 
 	// private List<NGramContainer> ngramContainersList = new
 	// ArrayList<NGramContainer>();
-
 	// new version change the list to map, which can operate more efficiently.
 	private Map<String, NGramContainer> ngramContainerList;
 	private static final String Key = "068cc746-31ff-4e41-ae83-a2d3712d3e68";

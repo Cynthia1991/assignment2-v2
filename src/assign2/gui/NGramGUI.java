@@ -100,7 +100,6 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 	private static java.awt.Font Font = new Font("Serif", 0, 20);
 
 	// Helper method for constructing the GUI
-
 	/**
 	 * @param arg0
 	 *            - the Frame Title
@@ -108,7 +107,6 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 	public NGramGUI(String arg0) throws HeadlessException {
 		super(arg0);
 	}
-
 	/**
 	 * Create input text area GUI
 	 * 
@@ -480,7 +478,6 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 				}
 			};
 			myThread1.start();
-
 		}
 		if (buttonString.equals("DISPLAY_CHART")) {
 			// Asking confirmation whether the user would like to get the

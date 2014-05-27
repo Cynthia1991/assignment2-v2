@@ -18,7 +18,6 @@ import javax.swing.SwingUtilities;
  */
 
 public class Suggestions {
-
 	public static void main(String[] args) {
 		// SwingUtilities.invokeLater(new
 		// ResultPanel("Welcome to Cynthia's Search suggestion:)"));

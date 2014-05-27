@@ -9,7 +9,6 @@ import java.util.ArrayList;
  * @created 2014.5.23
  */
 public class NGramNode implements NGramContainer {
-
 	// Array of words in order that make up the context
 	private String[] words;
 	// String containing the context phrase
