@@ -60,12 +60,12 @@ import java.util.List;
  * @author QianFu&ChuanLi
  * @created 2014.5.17.
  */
-
 public class ResultPanel extends JPanel {
 	
 	/**  
 	 * @fields serialVersionUID  
 	 */  
+	
 	private static final long serialVersionUID = 1L;
 	private static int SCROLL_WIDTH = 600;
 	private static int SCROLL_HEIGHT =700;

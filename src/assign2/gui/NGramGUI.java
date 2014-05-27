@@ -253,6 +253,7 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 		resultsBarPanel.setPreferredSize(new Dimension(BAR_WIDTH, BAR_HEIGHT));
 		this.getContentPane().add(resultsBarPanel, BorderLayout.EAST);
 	}
+	//
 	private void createGUI() {
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -265,6 +266,7 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 		chartButton.setEnabled(false);
 		hideChartButton.setEnabled(false);
 	}
+	
 	private String[] parseInput(String text) throws NGramException {
 		boolean VALID = false;
 		String[] arrayContexts = null;

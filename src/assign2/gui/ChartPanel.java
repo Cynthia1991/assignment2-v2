@@ -186,7 +186,6 @@ public class ChartPanel extends JPanel{
 	 * @return dataset
 	 * 
 	 */
-	
 	private  DefaultCategoryDataset createDataset(String[] contexts,NGramMap ngramMap) {
 	       
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
