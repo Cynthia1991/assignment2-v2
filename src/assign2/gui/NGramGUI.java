@@ -1,9 +1,9 @@
 /**  
  * @title NGramGUI.java  
  * @package assign2.gui  
- * @author kervin  
- * @version V1.0  
- * created 2014年5月17日  
+ * @author QianFu&ChuanLi  
+ * @version V2.0  
+ * created 2014.5.27.  
  */
 package assign2.gui;
 
@@ -13,16 +13,11 @@ import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,17 +31,14 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-import org.jfree.chart.ChartPanel;
-
-import com.sun.org.glassfish.external.statistics.annotations.Reset;
-
 import assign2.ngram.NGramException;
 import assign2.ngram.NGramNode;
 import assign2.ngram.NGramStore;
 
 /**
  * @version 1.0
- * @author QianFu&ChuanLi
+ * @author QianFu n9223002
+ * @author ChuanLi n8818452
  * @created 2014.5.17.
  */
 /* a frame class */
@@ -63,8 +55,6 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 	private static final int HEIGHT = 800;
 	private static final int TEXTPANEL_WIDTH = 1000;
 	private static final int TEXTPANEL_HEIGHT = 100;
-	private static final int PREDICTNUM_PANEL_WIDTH = 600;
-	private static final int PREDICTNUM_PANEL_HEIGHT = 100;
 	private static final int TEXT_WIDTH = 800;
 	private static final int TEXT_HEIGHT = 60;
 
@@ -74,39 +64,42 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 	private static final int RESULT_HEIGHT = 600;
 	private static final int BAR_WIDTH = 1100;
 	private static final int BAR_HEIGHT = 600;
-	// private static final Double[] nodeProbabilities = null;
 
-	// creat GUI parts
+	// Creating the GUI
 
-	private JPanel textAreaPanel;// input text area
-	private JPanel predictionNumPanel;// input text area
-	private JTextField textDisplay;// input text
+	// Creating the panel for input text area
+	private JPanel textAreaPanel;
+	private JTextField textDisplay;// input text field
 	private JTextField predictionsNum;// input the number of predictions
 
-	private JPanel resultsPanel;// results display area panel
-	private JPanel resultsBarPanel;// results bar display panel
-	private JTextField resultText;// results display text
+	// results display area panel
+	private JPanel resultsPanel;
 
-	private JPanel buttomPanel;// buttom panel
+	// bar display panel
+	private JPanel resultsBarPanel;
 
-	private NGramNode ngram;
-	private NGramStore ngramsMap;
-
-	private int predictionsNumber = 0;
-
-	private String[] inputContexts;
-
-	private static java.awt.Font Font = new Font("Serif", 0, 20);
-	private Thread myThread1;
-	private Thread myThread2;
+	// button panel
+	private JPanel buttonPanel;
 	private JButton predictionButton;
 	private JButton exitButton;
 	private JButton chartButton;
 	private JButton hideChartButton;
-	
-	private boolean START_INPUT = false;
+
+	private NGramStore ngramsMap;
+
+	private int predictionsNumber = 0;
+	// This string array stores the input contexts
+	private String[] inputContexts;
+	// This string array stores the contexts of the resulting array
 	private String[] inputHaveResultsArray = null;
-	// helper method to construct the GUI
+
+	private Thread myThread1;
+	// Symbol to mark if this is the first input for controlling the textDisplay
+	private boolean START_INPUT = false;
+
+	private static java.awt.Font Font = new Font("Serif", 0, 20);
+
+	// Helper method for constructing the GUI
 
 	/**
 	 * @param arg0
@@ -116,157 +109,141 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 		super(arg0);
 	}
 
-	
-	/**  
-	 * Create input text area   
-	 *   
+	/**
+	 * Create input text area GUI
+	 * 
 	 */
 	private void createInputAreaGUI() {
-		// create textPanel
+		// Creating the textPanel
 		textAreaPanel = new JPanel();
 		textAreaPanel.setBorder(new TitledBorder(new LineBorder(Color.BLACK, 1,
 				true), "Input Area~", TitledBorder.CENTER, TitledBorder.TOP));
 		textAreaPanel.setBackground(Color.PINK);
 		textAreaPanel.setPreferredSize(new Dimension(TEXTPANEL_WIDTH,
 				TEXTPANEL_HEIGHT));
-		
 		textAreaPanel.setLayout(new FlowLayout());
-		//textAreaPanel.setLayout(new BorderLayout());
 		textAreaPanel
 				.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
-		// create input label, then add into textAreaPanel
+		// Creating the input label and then adding it to the textAreaPanel
 		JLabel inputLabel = new JLabel("Input: ");
 		inputLabel.setFont(Font);
 		textAreaPanel.add(inputLabel);
 
-		// create text display JTextField(), then add into textAreaPanel
+		// Creating the text display JTextField() and then adding it to the
+		// textAreaPanel
 		textDisplay = new JTextField();
 		textDisplay.setPreferredSize(new Dimension(TEXT_WIDTH, TEXT_HEIGHT));
-		
 		textDisplay.setText("    Click here input your context ~");
 		textDisplay.setFont(Font);
 		textDisplay.setBackground(Color.WHITE);
 		textDisplay.setEditable(false);
 		textDisplay.setForeground(Color.GRAY);
-	
 		textAreaPanel.add(textDisplay);
-		//If it is the first input,clear JTextField when mouse clicks the JTextField
-		
-		
+
+		// If it is the first input, clearing the JTextField on mouse click over
+		// it
 		textDisplay.addMouseListener(new java.awt.event.MouseAdapter() {
-	        public void mouseClicked(java.awt.event.MouseEvent e) {
-	            if(START_INPUT == false){
-	            	textDisplay.setText("");
-	            textDisplay.setForeground(Color.BLACK);
-	            textDisplay.setEditable(true);
-	            
-	            START_INPUT = true;
-	            }
-	        } 
-	    });
-		
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				if (START_INPUT == false) {
+					textDisplay.setText("");
+					textDisplay.setForeground(Color.BLACK);
+					textDisplay.setEditable(true);
 
-		// create textPanel
-		predictionNumPanel = new JPanel();
-		predictionNumPanel.setBorder(new TitledBorder(new LineBorder(Color.BLACK, 1,
-						true), "Prediction Num", TitledBorder.CENTER, TitledBorder.TOP));
-		predictionNumPanel.setBackground(Color.PINK);
-		predictionNumPanel.setPreferredSize(new Dimension(PREDICTNUM_PANEL_WIDTH,
-						PREDICTNUM_PANEL_HEIGHT));
-		//predictionNumPanel.setLayout(new FlowLayout());
-		//predictionNumPanel.setLayout(new BorderLayout());
-		//predictionNumPanel
-		//				.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-	  
-		// create prediction number label, then add into textAreaPanel
-		JLabel predictionsNumberLabel = new JLabel("Num: ");
-		predictionsNumberLabel.setFont(Font);
-		textAreaPanel.add(predictionsNumberLabel);
+					START_INPUT = true;
+				}
+			}
+		});
 
-		// create prediction number text field, then add into textAreaPanel
+		// Creating the prediction number text field and then adding it to the
+		// textAreaPanel
 		predictionsNum = new JTextField(10);
 		predictionsNum.setPreferredSize(new Dimension(PNUM_WIDTH, PNUM_HEIGHT));
 		predictionsNum.setFont(Font);
 		predictionsNum.setText("5");
 		textAreaPanel.add(predictionsNum);
-		//predictionNumPanel.add(predictionsNum);
-		//setLayout(new GridLayout(2, 3));
-		// add the textAreaPanel into window
-		//this.getContentPane().add(textAreaPanel, GridLayout);
 		this.getContentPane().add(textAreaPanel, BorderLayout.PAGE_START);
-		//this.getContentPane().add(predictionNumPanel,  BorderLayout.PAGE_END);
 	}
 
-	/**  
-	 * Create button area    
-	 *   
+	/**
+	 * Create button area
+	 * 
 	 */
 	private void createButtonGUI() {
-		buttomPanel = new JPanel();
-		buttomPanel.setLayout(new FlowLayout());
-		buttomPanel.setBackground(Color.PINK);
-		// Create the predict button
+		buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout());
+		buttonPanel.setBackground(Color.PINK);
+		// Creating the predict button
 		predictionButton = new JButton("PREDICT");
 		predictionButton.addActionListener(this);
 		predictionButton.setBackground(Color.PINK);
-		buttomPanel.add(predictionButton);
-		this.getContentPane().add(buttomPanel, BorderLayout.PAGE_END);
-		
-		// Create the Showchart button
+		buttonPanel.add(predictionButton);
+		this.getContentPane().add(buttonPanel, BorderLayout.PAGE_END);
+
+		// Creating the button for displaying the chart panel
 		chartButton = new JButton("DISPLAY_CHART");
 		chartButton.addActionListener(this);
 		chartButton.setBackground(Color.PINK);
-		buttomPanel.add(chartButton);
-		this.getContentPane().add(buttomPanel, BorderLayout.PAGE_END);
-		
-		// Create the Showchart button
+		buttonPanel.add(chartButton);
+		this.getContentPane().add(buttonPanel, BorderLayout.PAGE_END);
+
+		// Creating the button for hiding the chart panel
 		hideChartButton = new JButton("HIDE_CHART");
 		hideChartButton.addActionListener(this);
 		hideChartButton.setBackground(Color.PINK);
-		buttomPanel.add(hideChartButton);
-		this.getContentPane().add(buttomPanel, BorderLayout.PAGE_END);
-		
-		// Create the Exit button
+		buttonPanel.add(hideChartButton);
+		this.getContentPane().add(buttonPanel, BorderLayout.PAGE_END);
+
+		// Creating the Exit button
 		exitButton = new JButton("EXIT");
 		exitButton.addActionListener(this);
 		exitButton.setBackground(Color.PINK);
-		buttomPanel.add(exitButton);
-		this.getContentPane().add(buttomPanel, BorderLayout.PAGE_END);
-		
-		this.getContentPane().add(buttomPanel,  BorderLayout.SOUTH);
+		buttonPanel.add(exitButton);
+		this.getContentPane().add(buttonPanel, BorderLayout.PAGE_END);
 	}
 
-	// Create the display text area
+	// Creating the display text area
 	private void createResultDispalyGUI() {
-		// creat the display area for showing the results
+		// Create the display area for showing the results
 		resultsPanel = new ResultPanel();
 		this.getContentPane().add(resultsPanel, BorderLayout.CENTER);
 	}
 
-	// Create the bar display text area
 	private void createResultDispalyChartGUI() {
-		// Create the display area for showing the bar results
+		// Creating the display area for showing the bar results
 		resultsBarPanel = new assign2.gui.ChartPanel();
 		resultsBarPanel.setFont(Font);
-		resultsPanel.setPreferredSize(new Dimension(RESULT_WIDTH, RESULT_HEIGHT));
+		resultsPanel
+				.setPreferredSize(new Dimension(RESULT_WIDTH, RESULT_HEIGHT));
 		resultsBarPanel.setPreferredSize(new Dimension(BAR_WIDTH, BAR_HEIGHT));
 		this.getContentPane().add(resultsBarPanel, BorderLayout.EAST);
 	}
-	//
+
+	// Creating the entire GUI form
 	private void createGUI() {
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
-		//
+		// Creating the input area on the GUI
 		createInputAreaGUI();
+		// Creating the display area for result on the GUI
 		createResultDispalyGUI();
-		
+		// Creating the area for button on the GUI
 		createButtonGUI();
+		// Firstly, the chart and the hide chart buttons are enabled
 		chartButton.setEnabled(false);
 		hideChartButton.setEnabled(false);
 	}
-	
+
+	/**
+	 * This method for test if the input is valid or not, if no, then throw the
+	 * NGramException
+	 * 
+	 * @param text
+	 * @return split the text by ",",then store them into the string[]
+	 * @throws NGramException
+	 * 
+	 */
 	private String[] parseInput(String text) throws NGramException {
 		boolean VALID = false;
 		String[] arrayContexts = null;
@@ -274,14 +251,14 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 
 		Pattern pattern = Pattern.compile(str, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(text);
-		// Judge whether the input is valid or invalid if valid
+		// Checking whether the input is valid or invalid
 		VALID = matcher.matches();
 
 		System.out.println(matcher.matches());
 
 		if (VALID == true) {
-			// If valid : cut every phrase
-			// from the input,by "," return the string[]
+			// If valid : separating all the phrases
+			// of the input by a comma (",") and then returning the string array
 			arrayContexts = text.split(",");
 
 		} else {
@@ -293,20 +270,27 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 
 	}
 
-	// according to the input, display the results
+	/**
+	 * This method for displaying the results,according to the input.
+	 * 
+	 * @param searchTextArr
+	 * @param ngramMap
+	 * @return
+	 * 
+	 */
 	private String displayResults(String[] searchTextArr, NGramStore ngramMap) {
 		StringBuffer ngramBuffer = new StringBuffer();
 		for (String s : searchTextArr) {
 			ngramBuffer.append("NGram Results for Query: ");
 			ngramBuffer.append(s);
 			NGramNode node = (NGramNode) ngramMap.getNGram(s);
-			
+
 			if (node == null) {
 				ngramBuffer.append("\n");
 				ngramBuffer.append("No results were returned for this phrase.")
 						.append("\n\n");
 			} else {
-				
+
 				ngramBuffer.append("\n");
 				ngramBuffer.append(node.toString());
 				ngramBuffer.append("\n");
@@ -314,8 +298,6 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 		}
 		return ngramBuffer.toString();
 	}
-
-	
 
 	/**
 	 * @see java.lang.Runnable#run()
@@ -329,45 +311,47 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 		this.setVisible(true);
 	}
 
-	/** 
-	 * Predict the results  
+	/**
+	 * This method for predicting the results
+	 * 
 	 * @param predictionNumber
-	 * @param inputText   
+	 * @param inputText
 	 * 
 	 */
 	private void predictionShowResults(int predictionNumber, String[] inputText) {
-		//store the inputText
+		// storing the input text
 		Set<String> input = new LinkedHashSet<String>(Arrays.asList(inputText));
-		//store the contexts from the input which have results
+		// storing the contexts supplied as part of input that have suggestion
+		// results
 		Set<String> inputHaveResults = new LinkedHashSet<String>(
 				Arrays.asList(inputText));
-		//store the contexts from the input which have results in array
+		// storing the contexts supplied as part of input into the array
 		this.inputHaveResultsArray = null;
 		boolean HAVERESULTS = false;
 		((ResultPanel) resultsPanel).SetResultText(" ");
 
 		for (String s : input) {
 			try {
-				// Get the predictions from the service
+				// Getting the predictions from the service
 				HAVERESULTS = ngramsMap.getNGramsFromService(s,
 						predictionNumber);
-				// If the phrase have no results, then delete that from the list
+				// If the phrase has no results, then delete it from the list
 				if (HAVERESULTS == false) {
 					inputHaveResults.remove(s);
-				} 
+				}
 			} catch (NGramException e1) {
-				// If a correct result is not get the NGramService,
-				// Then show the warning
-				if(resultsPanel != null){
-					  ((ResultPanel) resultsPanel).SetResultText(" ");
-					}
+				// If the correct result is not retrieved from the NGramService,
+				// then showing a warning message
+				if (resultsPanel != null) {
+					((ResultPanel) resultsPanel).SetResultText(" ");
+				}
 				JOptionPane.showMessageDialog(this,
 						"Please input valid contexts!");
 				return;
 			}
 
 		}
-		// Change the list to string[]
+		// Changing the list to a string array
 		inputHaveResultsArray = new String[inputHaveResults.size()];
 		int index = 0;
 		for (String s : inputHaveResults) {
@@ -377,123 +361,79 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 
 		String resultsString = displayResults(
 				input.toArray(new String[input.size()]), ngramsMap);
-		// Display the results on the text field
+		// Displaying the results on the text field
 		((ResultPanel) resultsPanel).SetResultText(resultsString);
 	}
-	
-	/**  
+
+	/**
+	 * This method for displaying the results bar
+	 * 
 	 * @param predictionNumber
-	 * @param inputText   
-	 *  
+	 * @param inputResultsText
+	 * 
 	 */
 	private void predictionShowResultsBar(String[] inputResultsText) {
-		//this.inputHaveResultsArray = null;
+		// this.inputHaveResultsArray = null;
 		((assign2.gui.ChartPanel) resultsBarPanel).clearResultsChart();
-		// Display the results by using the bar chart
+		// Displaying the results on the bar chart
 		((assign2.gui.ChartPanel) resultsBarPanel).DisplayResultChart(
 				inputResultsText, ngramsMap);
 	}
-	/*private void predictionShowResultsChart(int predictionNumber, String[] inputText) {
-		//store the inputText
-		Set<String> input = new LinkedHashSet<String>(Arrays.asList(inputText));
-		//store the contexts from the input which have results
-		Set<String> inputHaveResults = new LinkedHashSet<String>(
-				Arrays.asList(inputText));
-		//store the contexts from the input which have results in array
-		String[] inputHaveResultsArray = null;
-		boolean HAVERESULTS = false;
-		((assign2.gui.ChartPanel) resultsBarPanel).clearResultsChart();
 
-		for (String s : input) {
-			try {
-				// Get the predictions from the service
-				HAVERESULTS = ngramsMap.getNGramsFromService(s,
-						predictionNumber);
-				// If the phrase have no results, then delete that from the list
-				if (HAVERESULTS == false) {
-					inputHaveResults.remove(s);
-				} else if (HAVERESULTS == true) {
-
-				}
-
-			} catch (Exception e1) {
-				// If a correct result is not get from the NGramService,
-				// Then show the warning
-				if(resultsPanel != null){
-					  ((ResultPanel) resultsPanel).SetResultText(" ");
-					}
-				JOptionPane.showMessageDialog(this,
-						"Please input valid contexts!");
-				return;
-			}
-
-		}
-		// Change the list to string[]
-		inputHaveResultsArray = new String[inputHaveResults.size()];
-		int index = 0;
-		for (String s : inputHaveResults) {
-			inputHaveResultsArray[index] = s;
-			index++;
-		}
-		String resultsString = displayResults(
-				input.toArray(new String[input.size()]), ngramsMap);
-		// Display the results on the text field
-		((ResultPanel) resultsPanel).SetResultText(resultsString);
-		// Display the results by using the bar chart
-		((assign2.gui.ChartPanel) resultsBarPanel).DisplayResultChart(
-				inputHaveResultsArray, ngramsMap);
-	}*/
-
-	
-	/**  
-	 *    
-	 * When predicting, disabled the prediction button 
+	/**
+	 * 
+	 * This methods for disabling the prediction button when predicting.
 	 */
 	private void predicting() {
-		//resultText.setText("Please waiting...");
-		
+		// resultText.setText("Please waiting...");
+
 		textDisplay.setEnabled(false);
 		predictionsNum.setEnabled(false);
 		predictionButton.setEnabled(false);
 		chartButton.setEnabled(false);
-		
-		
+
 	}
 
-	/**  
-	 *    
-	 * When predicting, active the prediction button 
+	/**
+	 * This methods for enabling the prediction button when predicting
+	 * 
 	 */
 	private void afterPredict() {
-		
+
 		textDisplay.setEnabled(true);
 		predictionsNum.setEnabled(true);
 		predictionButton.setEnabled(true);
 		chartButton.setEnabled(true);
 	}
 
-	/*  
-	(non-Javadoc)  
-	* @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)  
-	*/
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
 		String buttonString = e.getActionCommand();
 
-
-		//chartButton.setEnabled(false);
+		// chartButton.setEnabled(false);
 		if (buttonString.equals("PREDICT")) {
-			String textString = textDisplay.getText();// get the input
+			// Getting the input text
+			String textString = textDisplay.getText();
+			// Getting the number of predictions on the text field
 			String predictionsNumString = predictionsNum.getText();
+			// Creating the display area for results on the GUI
 			createResultDispalyChartGUI();
 			this.ngramsMap = new NGramStore();
-			if(resultsBarPanel!= null){
+			// Disabling the resultsBarPanel and hideChartButton
+			if (resultsBarPanel != null) {
 				resultsBarPanel.setVisible(false);
-				}
+			}
 			hideChartButton.setEnabled(false);
-			// Judge whether or not the input prediction number is valid:
-			// positive integer
+			// Checking whether the number of suggestions provided as part of
+			// input is valid or not
+			// i.e., it is to be strictly a positive integer greater than zero
 			try {
 				predictionsNumber = Integer.valueOf(predictionsNumString);
 				if (predictionsNumber <= 0) {
@@ -507,15 +447,15 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 				return;
 			}
 
-			// Judge whether or not the input contexts are valid
+			// Checking whether the input contexts are valid or not
 			try {
-				if(textDisplay.getText() =="    Click here input your context ~" ){
+				if (textDisplay.getText() == "    Click here input your context ~") {
 					JOptionPane.showMessageDialog(this,
 							"Please input valid contexts!");
-					if(resultsPanel != null){
-					  ((ResultPanel) resultsPanel).SetResultText(" ");
+					if (resultsPanel != null) {
+						((ResultPanel) resultsPanel).SetResultText(" ");
 					}
-					
+
 					return;
 				}
 				inputContexts = parseInput(textString);
@@ -523,44 +463,48 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 
 				JOptionPane.showMessageDialog(this,
 						"Please input valid contexts!");
-				if(resultsPanel != null){
-				  ((ResultPanel) resultsPanel).SetResultText(" ");
+				if (resultsPanel != null) {
+					((ResultPanel) resultsPanel).SetResultText(" ");
 				}
 				return;
 			}
-
+			// Adding a thread to operate the prediction process
 			myThread1 = new Thread() {
-			@Override
-			public void run() {
-				//If the service is working, enable the button.
-				predicting();
-				predictionShowResults(predictionsNumber, inputContexts);
-				//chartButton.setEnabled(true);
-				afterPredict();
-			}
+				@Override
+				public void run() {
+					// Enabling the button if the service is working
+					predicting();
+					predictionShowResults(predictionsNumber, inputContexts);
+					// chartButton.setEnabled(true);
+					afterPredict();
+				}
 			};
 			myThread1.start();
 
 		}
 		if (buttonString.equals("DISPLAY_CHART")) {
-			// Ask whether the user want to show chart
-			
+			// Asking confirmation whether the user would like to get the
+			// results displayed on bar chart
+
 			createResultDispalyChartGUI();
 			predictionShowResultsBar(inputHaveResultsArray);
+			// After the bar chart is displayed, the hide button is enabled
 			hideChartButton.setEnabled(true);
+			// After the bar chart is displayed, the chart button is enabled
 			chartButton.setEnabled(false);
 		}
 		if (buttonString.equals("HIDE_CHART")) {
-			// Ask whether the user want to hide the chart
-			resultsPanel.setVisible(true);
-			if(resultsBarPanel!= null){
+			// Asking confirmation whether the user does not want to view the
+			// bar chart
+			// Hiding the bar chart
+			if (resultsBarPanel != null) {
 				resultsBarPanel.setVisible(false);
 			}
 			hideChartButton.setEnabled(false);
 			chartButton.setEnabled(true);
 		}
 		if (buttonString.equals("EXIT")) {
-			// Ask whether the user want to exit
+			// Asking whether the user would like to exit from the application
 			if (JOptionPane.showConfirmDialog(this, "Do you want to EXIT?",
 					"Warning", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				System.exit(0);

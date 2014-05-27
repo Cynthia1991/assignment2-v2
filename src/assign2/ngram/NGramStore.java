@@ -12,15 +12,15 @@ import com.microsoft.research.webngram.service.GenerationService.TokenSet;
 
 /**
  * @version 2.0
- * @author QianFu(Cynthia)
+ * @author QianFu n9223002
  * @created 2014.5.25.
  */
 public class NGramStore implements NGramMap {
 
 	// private List<NGramContainer> ngramContainersList = new
 	// ArrayList<NGramContainer>();
-	
-	//new version change the list to map, which can operate more efficiently.
+
+	// new version change the list to map, which can operate more efficiently.
 	private Map<String, NGramContainer> ngramContainerList;
 	private static final String Key = "068cc746-31ff-4e41-ae83-a2d3712d3e68";
 	// private int MAXRESULTS = 5;
@@ -42,15 +42,16 @@ public class NGramStore implements NGramMap {
 		// judge whether or not the context exists in
 		// the Map,if yes, update the context,if no, add the context
 		ngramContainerList.put(ngram.getContext(), ngram);
-		
-		/*old version:
-		 * for (NGramContainer currentNgram : ngramContainersList) { if
-		 * (currentNgram == ngram) { ngramContainersList.remove(currentNgram);//
-		 * updated } } ngramContainersList.add(ngram);
+
+		/*
+		 * old version: for (NGramContainer currentNgram : ngramContainersList)
+		 * { if (currentNgram == ngram) {
+		 * ngramContainersList.remove(currentNgram);// updated } }
+		 * ngramContainersList.add(ngram);
 		 */
 		// HAVERESULT.add(true);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -60,10 +61,10 @@ public class NGramStore implements NGramMap {
 	public void removeNGram(String context) {
 
 		ngramContainerList.remove(context);
-		
-		/*old version:
-		 * for (NGramContainer currentNgram : ngramContainersList) { if
-		 * (currentNgram.getContext() == context) {
+
+		/*
+		 * old version: for (NGramContainer currentNgram : ngramContainersList)
+		 * { if (currentNgram.getContext() == context) {
 		 * ngramContainersList.remove(currentNgram);// updated } }
 		 */
 
@@ -79,12 +80,14 @@ public class NGramStore implements NGramMap {
 
 		NGramContainer ngramContainer = ngramContainerList.get(context);
 
-		/*old version:
-		 * for (NGramContainer currentNgram : ngramContainersList) { if
-		 * (currentNgram.getContext() == context) { return currentNgram; } }
+		/*
+		 * old version: for (NGramContainer currentNgram : ngramContainersList)
+		 * { if (currentNgram.getContext() == context) { return currentNgram; }
+		 * }
 		 */
 		return ngramContainer;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -140,7 +143,7 @@ public class NGramStore implements NGramMap {
 					.toArray(new Double[0]);
 			NGramNode ngramContainer = new NGramNode(context, predictions,
 					probabilities);
-			
+
 			this.addNGram(ngramContainer);
 			return true;
 
