@@ -1,0 +1,8 @@
+Contributor 1 : Qian Fu
+Student ID: n9223002 
+Contribution: NGramNode, NGramStore
+
+
+Contributor 2 : Chuan Li
+Student ID: n9223002 
+Contribution: NGramNodeTest, NGramStoreTest
