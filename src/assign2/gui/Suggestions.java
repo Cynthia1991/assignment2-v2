@@ -19,8 +19,7 @@ import javax.swing.SwingUtilities;
 
 public class Suggestions {
 	public static void main(String[] args) {
-		// SwingUtilities.invokeLater(new
-		// ResultPanel("Welcome to Cynthia's Search suggestion:)"));
+	
 		SwingUtilities.invokeLater(new NGramGUI(
 				"Welcome to Cynthia&Lambert's Search suggestion:)"));
 

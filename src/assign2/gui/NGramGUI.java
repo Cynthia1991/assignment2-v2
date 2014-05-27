@@ -108,7 +108,7 @@ public class NGramGUI extends JFrame implements ActionListener, Runnable {
 		super(arg0);
 	}
 	/**
-	 * Create input text area GUI
+	 * Creating input text area GUI
 	 * 
 	 */
 	private void createInputAreaGUI() {

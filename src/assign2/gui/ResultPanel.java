@@ -89,7 +89,7 @@ public class ResultPanel extends JPanel {
 		this.add(resultScroll, BorderLayout.CENTER);
 	}
 
-	// @SuppressWarnings("unused")
+
 	public void SetResultText(String result) {
 		StringBuffer resultText = new StringBuffer();
 		// Display the results on the results text area
