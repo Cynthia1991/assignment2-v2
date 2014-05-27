@@ -1588,7 +1588,10 @@ public class NGramNodeTest {
 		// String context = "to or not";
 		NGramNode ngram = new NGramNode(context, predictions, probabilities);
 		// assertEquals("my book is", ngram);
+		String str = "my book is | to : 0.111\n"+"my book is | be : 0.222\n"+"my book is | or : 0.333\n";
 		System.out.println(ngram.toString());
+		assertEquals(ngram.toString(),str);
+		
 	}
 	
 	@Test
